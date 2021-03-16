@@ -28,4 +28,4 @@ gradleEnterprise {
     }
 }
 
-rootProject.name = 'greeter-microservice'
+rootProject.name = 'address-geocoding'
