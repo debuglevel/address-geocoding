@@ -154,6 +154,10 @@ dependencies {
     //implementation "io.micronaut.views:micronaut-views-freemarker"
     //implementation "io.micronaut.views:micronaut-views-rocker"
     //implementation "io.micronaut.views:micronaut-views-soy"
+
+    // Geocoding libraries
+    implementation "com.google.maps:google-maps-services:$googleMapsVersion"
+    implementation "fr.dudie:nominatim-api:$nominatimVersion"
 }
 
 // Java configuration
