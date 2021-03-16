@@ -1,0 +1,277 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin"
+
+        // TODO: might be removed when https://hibernate.atlassian.net/browse/HHH-13354 is resolved
+        classpath "org.hibernate:hibernate-gradle-plugin:$hibernateGradlePluginVersion"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+
+    // Kotlin annotations processor (needed by Micronaut)
+    id 'org.jetbrains.kotlin.kapt'
+
+    // needed for Bean Validation https://docs.micronaut.io/latest/guide/index.html#beanValidation
+    // unsure, if there is another reason for it
+    // TODO: configure allopen to only open @Validated classes
+    id 'org.jetbrains.kotlin.plugin.allopen'
+
+    // Check updated dependencies with "./gradlew dependencyUpdates".
+    id 'com.github.ben-manes.versions'
+
+    // Release version with "./gradlew release"
+    id 'net.researchgate.release'
+
+    // Create start scripts
+    // Is executed on "build" task but not on e.g. "jar" task
+    id 'application'
+
+    // Bundle all dependencies into one fat shadowed jar
+    // (Gets automatically triggered when application plugin is present)
+    id 'com.github.johnrengelman.shadow'
+
+    // add no-argument constructors as they are needed for JPA (see https://kotlinlang.org/docs/reference/compiler-plugins.html#jpa-support)
+    id "org.jetbrains.kotlin.plugin.jpa"
+}
+// Enhance Hibernate entities (see configuration block below)
+// TODO: move to plugins block when https://hibernate.atlassian.net/browse/HHH-13354 is resolved
+apply plugin: 'org.hibernate.orm'
+
+ext {
+    _group = applicationGroup
+    _module = applicationModule
+    _mainClass = _group + "." + _module + ".Application"
+    _title = applicationTitle
+}
+
+// application plugin configuration
+applicationName = _title
+mainClassName = _mainClass
+
+repositories {
+    jcenter()
+//    mavenLocal()
+//    maven {
+//        url "https://jitpack.io"
+////        // workaround to be able to specify a git hash as jitpack version
+////        metadataSources {
+////            artifact()
+////        }
+//    }
+}
+
+dependencies {
+    // If no specific version is defined, it might be provided by the Micronaut BOM
+
+    // Kotlin
+    //implementation "org.jetbrains.kotlin:kotlin-reflect"
+    //implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
+
+    // Tests
+    /// JUnit
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+    testImplementation "org.junit.jupiter:junit-jupiter-params"
+    testImplementation "io.micronaut.test:micronaut-test-junit5"
+    /// Mockito
+    //testImplementation "org.mockito:mockito-junit-jupiter:$mockitoJunitJupiterVersion"
+    /// Assertions
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+
+    // Logging
+    // See http://saltnlight5.blogspot.com/2013/08/how-to-configure-slf4j-with-different.html for a quick introduction to slf4j
+    implementation "io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion"
+    runtimeOnly "ch.qos.logback:logback-classic:$logbackVersion"
+    runtimeOnly "net.logstash.logback:logstash-logback-encoder:$logstashLogbackVersion"
+
+
+    // Micronaut Bill of Materials, which defines dependency versions
+    implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+    kapt platform("io.micronaut:micronaut-bom:$micronautVersion")
+    kaptTest platform("io.micronaut:micronaut-bom:$micronautVersion")
+
+    // Micronaut Core
+    implementation "io.micronaut:micronaut-runtime"
+    implementation "io.micronaut.kotlin:micronaut-kotlin-runtime"
+    implementation "javax.annotation:javax.annotation-api"
+    runtimeOnly "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModuleKotlinVersion"
+
+    // Micronaut Inversion of Control / Dependency Injection
+    kapt "io.micronaut:micronaut-inject-java"
+    kaptTest "io.micronaut:micronaut-inject-java"
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+
+    // Micronaut Validation
+    kapt "io.micronaut:micronaut-validation"
+    //implementation 'io.micronaut.configuration:micronaut-hibernate-validator' // if full Bean Validator 2.0 compliance is needed
+
+    // Micronaut HTTP Server
+    implementation "io.micronaut:micronaut-http-server-netty"
+
+    // Micronaut HTTP Client
+    implementation "io.micronaut:micronaut-http-client"
+
+    // Micronaut Management & Monitoring
+    /// automatically provides the /health endpoint publicly, and some other with authentication
+    implementation 'io.micronaut:micronaut-management'
+    //implementation 'io.micronaut.configuration:micronaut-jmx' // activate JMX for the endpoints
+
+    // Micronaut Persistence
+    kapt "io.micronaut.data:micronaut-data-processor"
+    implementation "io.micronaut.data:micronaut-data-hibernate-jpa"
+    /// JDBC Connection Pooling
+    runtimeOnly "io.micronaut.sql:micronaut-jdbc-hikari"
+    //runtimeOnly "io.micronaut.sql:micronaut-jdbc-tomcat"
+    //runtimeOnly "io.micronaut.sql:micronaut-jdbc-dbcp"
+    /// Database drivers
+    runtimeOnly "com.h2database:h2"
+    runtimeOnly "org.mariadb.jdbc:mariadb-java-client:$mariadbVersion"
+    //runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
+    //runtimeOnly "org.hsqldb:hsqldb:$hsqldbVersion"
+    //runtimeOnly "org.apache.derby:derby:$derbyVersion"
+
+    // Micronaut Security
+    kapt "io.micronaut.security:micronaut-security-annotations"
+    implementation "io.micronaut.security:micronaut-security"
+
+    // Micronaut Service registration and discovery
+    implementation "io.micronaut:micronaut-discovery-client"
+
+    // Micronaut OpenAPI integration
+    kapt "io.micronaut.configuration:micronaut-openapi"
+    implementation "io.swagger.core.v3:swagger-annotations"
+
+    // Micronaut Views
+    //implementation "io.micronaut.views:micronaut-views-thymeleaf"
+    //implementation "io.micronaut.views:micronaut-views-handlebars"
+    //implementation "io.micronaut.views:micronaut-views-velocity"
+    //implementation "io.micronaut.views:micronaut-views-freemarker"
+    //implementation "io.micronaut.views:micronaut-views-rocker"
+    //implementation "io.micronaut.views:micronaut-views-soy"
+}
+
+// Java configuration
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8 // Source is Java 8 code
+    targetCompatibility = JavaVersion.VERSION_1_8 // Byte code will be JVM 8
+}
+
+// Kotlin configuration (implies compileKotlin and compileTestKotlin)
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8 // Byte code will be JVM 8
+        // retain parameter names for Java reflection
+        javaParameters = true
+    }
+}
+
+// enable gradle incremental annotation processing for Java
+tasks.withType(JavaCompile) {
+    options.compilerArgs = [
+            "-Amicronaut.processing.incremental=true",
+            "-Amicronaut.processing.annotations=${_group}.*",
+            "-Amicronaut.processing.group=${_group}",
+            "-Amicronaut.processing.module=${_module}",
+    ]
+}
+
+// enable gradle incremental annotation processing for Kotlin
+kapt {
+    arguments {
+        arg("micronaut.processing.incremental", true)
+        arg("micronaut.processing.annotations", "${_group}.*")
+        arg("micronaut.processing.group", _group)
+        arg("micronaut.processing.module", _module)
+    }
+}
+
+// jar configuration
+jar {
+    // add Manifest to jar
+    manifest {
+        attributes 'Implementation-Title': applicationTitle,
+                'Implementation-Version': version,
+                'Main-Class': _mainClass
+    }
+}
+
+// Appends entries in META-INF/services resources into a single resource. Not sure, if needed.
+// see: https://github.com/johnrengelman/shadow/blob/master/src/main/groovy/com/github/jengelman/gradle/plugins/shadow/transformers/ServiceFileTransformer.groovy
+shadowJar {
+    mergeServiceFiles()
+}
+
+// deactivate zip generations in distributions folder as they are not very useful and take relatively much build time
+tasks.distZip.enabled = false
+tasks.shadowDistZip.enabled = false
+
+// Configuration of net.researchgate.release plugin
+release {
+    failOnCommitNeeded = true // fail because changed files would be committed automatically
+    failOnUnversionedFiles = false // don't fail because unversioned files would not be committed automatically
+}
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+
+    reports {
+        html.enabled = true
+    }
+}
+
+allOpen {
+    annotation("io.micronaut.aop.Around")
+    //// open @Singleton for Mockito
+    //annotation("javax.inject.Singleton")
+}
+
+// enhance Hibernate entities in bytecode
+hibernate {
+    enhance {
+        enableLazyInitialization = true
+        enableDirtyTracking = true
+        enableAssociationManagement = true
+    }
+}
+
+// filter out release candidates on dependency update check
+dependencyUpdates.resolutionStrategy {
+    componentSelection { rules ->
+        rules.all { ComponentSelection selection ->
+            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm', 'preview', 'b', 'ea', 'pr'].any { qualifier ->
+                selection.candidate.version ==~ /(?i).*[.-]$qualifier[.\d-+]*/
+            }
+            if (rejected) {
+                selection.reject('Release candidate')
+            }
+        }
+    }
+}
+
+// -noverify skips verifying JAR files (reduce startup time)
+// -XX:TieredStopAtLevel=1 limits optimizations of the HotSpot compiler and its runtime overhead (reduce startup time)
+tasks.withType(JavaExec) {
+    //classpath += configurations.developmentOnly
+    jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+    if (gradle.startParameter.continuous) {
+        systemProperties(
+                'micronaut.io.watch.restart': 'true',
+                'micronaut.io.watch.enabled': 'true',
+                "micronaut.io.watch.paths": "src/main"
+        )
+    }
+}
+
+// For Heroku: create a "stage" task which simply executes "build"
+task stage(dependsOn: ['clean', 'build'])
+build.mustRunAfter clean
