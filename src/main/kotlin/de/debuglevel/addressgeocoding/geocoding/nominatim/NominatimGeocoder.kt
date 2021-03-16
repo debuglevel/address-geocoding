@@ -5,10 +5,14 @@ import de.debuglevel.addressgeocoding.geocoding.Geocoder
 import fr.dudie.nominatim.client.JsonNominatimClient
 import fr.dudie.nominatim.client.request.NominatimSearchRequest
 import fr.dudie.nominatim.model.Address
+import io.micronaut.context.annotation.Requires
 import mu.KotlinLogging
 import org.apache.http.impl.client.HttpClientBuilder
+import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
+@Singleton
+@Requires(property = "app.address-geocoding.geocoders.nominatim.enabled", value = "true")
 class NominatimGeocoder : Geocoder {
     private val logger = KotlinLogging.logger {}
 

@@ -1,7 +1,12 @@
 app:
-  greetings:
-    default-language: "null" # note that "null" must be enclosed by quotation marks, as it would be unset otherwise
-    unknown-language: "unknown" # note that key should not be camelCase, as uppercase characters may lead to problems in configuration binding
+  address-geocoding:
+    geocoders:
+      googlemaps:
+        enabled: false
+      nominatim:
+        enabled: true
+      photon:
+        enabled: false
   security:
     configurable-credential-authentication:
       username: "SECRET_USERNAME"
@@ -9,7 +14,7 @@ app:
 
 micronaut:
   application:
-    name: greeter
+    name: address-geocoding
     instance:
       id: ${random.shortuuid} # instance ID should be set random if Consul registration is active to avoid collisions (default ID would be the port number)
   server:
@@ -25,7 +30,7 @@ micronaut:
         paths: classpath:META-INF/swagger
         mapping: /swagger/**
   security:
-    enabled: true # default: false
+    enabled: false # default: false
 #  http:
 #    services: # manual service discovery
 #      foo: # service ID

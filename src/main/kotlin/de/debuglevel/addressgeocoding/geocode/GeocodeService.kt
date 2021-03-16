@@ -1,16 +1,16 @@
 package de.debuglevel.addressgeocoding.geocode
 
+import de.debuglevel.addressgeocoding.geocoding.Geocoder
+import io.micronaut.scheduling.annotation.Scheduled
 import mu.KotlinLogging
-import java.io.InputStream
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
 import java.util.*
 import javax.inject.Singleton
-import kotlin.concurrent.thread
+
 
 @Singleton
 class GeocodeService(
     private val geocodeRepository: GeocodeRepository,
+    private val geocoder: Geocoder,
 ) {
     private val logger = KotlinLogging.logger {}
 
@@ -31,6 +31,8 @@ class GeocodeService(
 
         val savedGeocode = geocodeRepository.save(geocode)
 
+        // TODO: should trigger an async geocode() call
+
         logger.debug { "Added geocode: $savedGeocode" }
         return savedGeocode
     }
@@ -42,6 +44,8 @@ class GeocodeService(
         // it would be a "detached entity" otherwise.
         val updateGeocode = this.get(id).apply {
             address = geocode.address
+            longitude = geocode.longitude
+            latitude = geocode.latitude
         }
 
         val updatedGeocode = geocodeRepository.update(updateGeocode)
@@ -80,6 +84,30 @@ class GeocodeService(
         val countDeleted = countBefore - countAfter
 
         logger.debug { "Deleted $countDeleted of $countBefore geocodes, $countAfter remaining" }
+    }
+
+    @Scheduled(fixedDelay = "60s", initialDelay = "30s")
+    fun updateMissingGeocodes() {
+        logger.debug { "Geocoding items with missing longitude and latitude..." }
+
+        // TODO: get only those with lon==null or/and lat==null from database
+        geocodeRepository.findAll()
+            .filter { it.latitude == null || it.longitude == null }
+            .forEach { geocode(it) }
+    }
+
+    fun geocode(geocode: Geocode) {
+        logger.debug { "Geocoding $geocode..." }
+
+        val coordinates = geocoder.getCoordinates(geocode.address)
+        geocode.apply {
+            latitude = coordinates.latitude
+            longitude = coordinates.longitude
+        }
+
+        update(geocode.id!!, geocode)
+
+        logger.debug { "Geocoded $geocode" }
     }
 
     class EntityNotFoundException(criteria: Any) : Exception("Entity '$criteria' does not exist.")
