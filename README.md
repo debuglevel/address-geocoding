@@ -56,3 +56,9 @@ Might be useful for testing or for initial population
 ```bash
 cat teststrassen.txt | while read line ; do curl --location --request POST 'http://localhost:8080/geocodes/' --header 'Content-Type: application/json' --data-raw "{ \"address\": \"$line\" }"; done
 ```
+
+parallel version:
+
+```bash
+cat teststrassen.txt | while read line ; do curl --location --request POST 'http://localhost:8080/geocodes/' --header 'Content-Type: application/json' --data-raw "{ \"address\": \"$line\" }" & echo test; done
+```
