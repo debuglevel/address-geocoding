@@ -16,6 +16,7 @@ data class Geocode(
     var address: String,
     var longitude: Double?,
     var latitude: Double?,
+    var lastGeocodingOn: LocalDateTime? = null,
     var failedAttempts: Int = 0,
     @DateCreated
     var createdOn: LocalDateTime = LocalDateTime.now(),

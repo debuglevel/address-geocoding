@@ -5,6 +5,7 @@ import de.debuglevel.addressgeocoding.geocoding.Geocoder
 import io.micronaut.data.exceptions.EmptyResultException
 import io.micronaut.scheduling.annotation.Scheduled
 import mu.KotlinLogging
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Singleton
 
@@ -57,6 +58,7 @@ class GeocodeService(
             longitude = geocode.longitude
             latitude = geocode.latitude
             failedAttempts = geocode.failedAttempts
+            lastGeocodingOn = geocode.lastGeocodingOn
         }
 
         val updatedGeocode = geocodeRepository.update(updateGeocode)
@@ -112,6 +114,8 @@ class GeocodeService(
 
     fun geocode(geocode: Geocode) {
         logger.debug { "Geocoding $geocode..." }
+
+        geocode.lastGeocodingOn = LocalDateTime.now()
 
         try {
             val coordinates = geocoder.getCoordinates(geocode.address)
