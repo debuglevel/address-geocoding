@@ -13,10 +13,25 @@ data class Geocode(
     @Id
     @GeneratedValue
     var id: UUID?,
+    /**
+     * Address which should be geocoded
+     */
     var address: String,
+    /**
+     * Longitude, if geocoding was successful; null if failed or not yet attempted.
+     */
     var longitude: Double?,
+    /**
+     * Latitude, if geocoding was successful; null if failed or not yet attempted.
+     */
     var latitude: Double?,
+    /**
+     * DateTime when the last attempt to geocoding was made; null is not yet attempted.
+     */
     var lastGeocodingOn: LocalDateTime? = null,
+    /**
+     * How many times geocoding failed. Reset to 0 on success.
+     */
     var failedAttempts: Int = 0,
     @DateCreated
     var createdOn: LocalDateTime = LocalDateTime.now(),
