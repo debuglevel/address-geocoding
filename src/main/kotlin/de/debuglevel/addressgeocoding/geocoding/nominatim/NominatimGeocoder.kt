@@ -92,7 +92,7 @@ class NominatimGeocoder(
         }
 
         if (addresses.isEmpty()) {
-            logger.info { "Could not geocode '$address'" }
+            logger.info { "Could not geocode '$address'; address is unknown" }
             throw AddressNotFoundException(address)
         }
 
