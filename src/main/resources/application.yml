@@ -5,6 +5,8 @@ app:
         enabled: false
       nominatim:
         enabled: true
+        # How long should be waited between two requests (in nanoseconds)
+        wait-between-requests: 1_000_000_000
       # photon might be faster, but also not a service not as reliable as nominatim
       photon:
         enabled: false

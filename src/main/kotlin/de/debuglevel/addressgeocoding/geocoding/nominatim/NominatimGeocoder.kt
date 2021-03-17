@@ -16,7 +16,9 @@ import kotlin.concurrent.withLock
 
 @Singleton
 @Requires(property = "app.address-geocoding.geocoders.nominatim.enabled", value = "true")
-class NominatimGeocoder : Geocoder {
+class NominatimGeocoder(
+    private val nominatimProperties: NominatimProperties,
+) : Geocoder {
     private val logger = KotlinLogging.logger {}
 
     override fun getCoordinates(address: String): Coordinate {
@@ -62,7 +64,7 @@ class NominatimGeocoder : Geocoder {
     private fun waitForNextRequestAllowed() {
         val lastRequestOn = this.lastRequestOn
         if (lastRequestOn != null) {
-            val nextRequestDateTime = lastRequestOn.plusNanos(1_000_000_000)
+            val nextRequestDateTime = lastRequestOn.plusNanos(nominatimProperties.waitBetweenRequests)
             val waitingTime = ChronoUnit.MILLIS.between(LocalDateTime.now(), nextRequestDateTime)
             logger.debug { "Waiting ${waitingTime}ms until the next request to Nominatim is allowed..." }
             Thread.sleep(waitingTime)
