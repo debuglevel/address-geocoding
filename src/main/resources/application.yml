@@ -5,6 +5,7 @@ app:
         enabled: false
       nominatim:
         enabled: true
+      # photon might be faster, but also not a service not as reliable as nominatim
       photon:
         enabled: false
   security:
@@ -40,6 +41,7 @@ micronaut:
 logger:
   levels:
     de.debuglevel: DEBUG
+    io.micronaut.http.client: DEBUG
     io.micronaut.http.server: DEBUG
     io.micronaut.data.query: DEBUG
     # io.micronaut.context.condition: DEBUG # log information about loading conditional beans
