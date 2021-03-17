@@ -5,35 +5,35 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class Properties(
     @JsonProperty("city")
-    val city: String,
+    val city: String?,
     @JsonProperty("country")
-    val country: String,
+    val country: String?,
     @JsonProperty("countrycode")
-    val countrycode: String,
+    val countrycode: String?,
     @JsonProperty("district")
-    val district: String,
+    val district: String?,
     @JsonProperty("extent")
-    val extent: List<Double>,
+    val extent: List<Double>?,
     @JsonProperty("housenumber")
-    val housenumber: String,
+    val housenumber: String?,
     @JsonProperty("locality")
-    val locality: String,
+    val locality: String?,
     @JsonProperty("name")
-    val name: String,
+    val name: String?,
     @JsonProperty("osm_id")
-    val osmId: Int,
+    val osmId: Int?,
     @JsonProperty("osm_key")
-    val osmKey: String,
+    val osmKey: String?,
     @JsonProperty("osm_type")
-    val osmType: String,
+    val osmType: String?,
     @JsonProperty("osm_value")
-    val osmValue: String,
+    val osmValue: String?,
     @JsonProperty("postcode")
-    val postcode: String,
+    val postcode: String?,
     @JsonProperty("state")
-    val state: String,
+    val state: String?,
     @JsonProperty("street")
-    val street: String,
+    val street: String?,
     @JsonProperty("type")
-    val type: String
+    val type: String?
 )
