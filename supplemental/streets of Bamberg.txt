@@ -1,0 +1,568 @@
+Abtissensee   96052
+Adalbert-Stifter-Straße   96050
+Adalbertstraße   96049
+Adam-Krafft-Straße   96050
+Adam-Senger-Straße   96052
+Adam-Stegerwald-Straße   96050
+Adenauerufer   96050
+Adolf-Kolping-Straße   96050
+Adolf-Wächter-Straße   96052
+Agnes-Schwanfelder-Straße   96050
+Agnesstraße   96049
+Ahornstraße   96050
+Akazienweg   96050
+Albrecht-Dürer-Straße   96052
+Albrecht-von-Eyb-Leite   96049
+Altenburg   96049
+Altenburger Straße   96049
+Alter Graben   96049
+Am Börstig   96052
+Am Bundleshof   96049
+Am Friedrichsbrunnen   96049
+Am Hahnenweg   96049
+Am Heidelsteig   96052
+Am Hirschknock   96052
+Am Hochgericht   96050
+Am Hollergraben   96047
+Am Kanal   96047
+Am Knöcklein   96049
+Am Kranen   96047
+Am Leinritt   96049
+Am Luitpoldhain   96050
+Am Melbersee   96052
+Am Pinzighof   96052
+Am Roten Knock   96049
+Am Rotgraben   96052
+Am Sendelbach   96050
+Am Spinnseyer   96052
+Am Steinknock   96052
+Am Tännig   96050
+Am Uferholz   96047
+Am Weidenufer   96047
+Am Zwinger   96047
+Amalienstraße   96047
+Amselweg   96049
+An den Wachsbleichen   96052
+An der Breitenau   96052
+An der Kettenstraße   96049
+An der Spinnerei   96049
+An der Universität   96047
+Andreas-Hofer-Straße   96049
+Anna-Maria-Junius-Straße   96047
+Annastraße   96050
+Anton-Schuster-Straße   96052
+Anwanderstraße   96052
+Armeestraße   96050
+Arndtstraße   96052
+Aronstraße   96052
+Artur-Landgraf-Straße   96049
+Aubachstraße   96052
+Auf dem Lerchenbühl   96049
+Auf der Höhe   96049
+Aufseßstraße   96049
+Augustenstraße   96047
+Äußere Löwenstraße   96052
+Austraße   96047
+Babenbergerring   96049
+Badstraße   96049
+Balthasargäßchen   96049
+Balthasar-Neumann-Straße   96047
+Banscherhof   96052
+Baunacher Straße   96052
+Benediktinerweg   96049
+Benkertstraße   96052
+Benzstraße   96052
+Berliner Ring   96050
+Birkenallee   96050
+Birkengraben   96052
+Bischofsmühlbrücke   96047
+Bleichanger   96050
+Böttgerstraße   96050
+Boveristraße   96050
+Breitäckerstraße   96049
+Brennerstraße   96052
+Breslaustraße   96052
+Brückenstraße   96047
+Bruckertshofer Straße   96052
+Bruderwaldbrücke   96049
+Bruderwaldstraße   96049
+Buchenstraße   96050
+Bughof   96049
+Bughofer Straße   96050
+Burgheimer Lage   96049
+Carl-Meinelt-Straße   96050
+Clarissenweg   96047
+Claviusstraße   96047
+Coburger Straße   96052
+Concordiastraße   96049
+Die Krött   96049
+Dientzenhoferstraße   96047
+Dieselstraße   96052
+Distelweg   96050
+Dominikanerstraße   96049
+Domplatz   96049
+Domstraße   96049
+Don-Bosco-Straße   96047
+Dorotheenstraße   96049
+Dr.-Haas-Straße   96047
+Dr.-Hans-Ehard-Straße   96049
+Dr.-Ida-Noddack-Straße   96047
+Dr.-Rattel-Straße   96052
+Dr.-Remeis-Straße   96049
+Dr.-Robert-Pfleger-Straße   96052
+Dr.-Thomas-Dehler-Straße   96049
+Dürrseestraße   96052
+Dürrwächterstraße   96052
+E.T.A.-Hoffmann-Platz   96047
+E.T.A.-Hoffmann-Straße   96047
+Eberhardtstraße   96052
+Ebermannstadter Straße   96050
+Eckbertstraße   96052
+Edelstraße   96047
+Egelseestraße   96050
+Eichelseeweg   96049
+Eichendorffplatz   96050
+Eichendorffstraße   96050
+Eichenweg   96050
+Eisgrube   96049
+Elisabethenstraße   96049
+Elsterweg   96050
+Emil-Kemmer-Straße   96052
+Erlenweg   96050
+Erlichstraße   96050
+Ernst-Zinner-Straße   96052
+Erthalweg   96049
+Eschenweg   96050
+Esztergomstraße   96049
+Eugen-Pacelli-Platz   96052
+Europabrücke   96047
+Fabrikbau   96049
+Färbergasse   96052
+Farnweg   96052
+Feldkirchenstraße   96052
+Ferdinand-Braun-Straße   96050
+Ferdinand-Tietz-Straße   96052
+Fichtestraße   96052
+Fischerei   96047
+Fischstraße   96047
+Fleischstraße   96047
+Flößergasse   96049
+Fohlengartenstraße   96050
+Föhrenstraße   96052
+Forchheimer Straße   96050
+Fortenbachweg   96052
+Franz-Fischer-Brücke   96049
+Franziskanergasse   96049
+Franz-Ludwig-Straße   96047
+Frauenplatz   96049
+Frauenstraße   96047
+Fraunhoferstraße   96050
+Friedensbrücke   96047
+Friedrich-Ebert-Straße   96050
+Friedrichstraße   96047
+Fritz-Bayerlein-Weg   96049
+Gabelsbergerstraße   96050
+Gackensteinweg   96049
+Galgenfuhr   96050
+Gangolfplatz   96050
+Gangolfsweg   96050
+Gänswiesenweg   96052
+Gartenstädter Markt   96052
+Gartenstraße   96049
+Gasfabrikstraße   96052
+Geheimrat-Heß-Ring   96047
+Geisfelder Straße   96050
+Generalsgasse   96047
+Georgendamm   96047
+Georgenstraße   96052
+Gerberstraße   96052
+Gereuthstraße   96050
+Gerhart-Hauptmann-Straße   96050
+Gertraudenstraße   96050
+Geschwister-Scholl-Ring   96047
+Geyerswörthbrücke   96047
+Geyerswörthplatz   96049
+Geyerswörthstraße   96047
+Ginsterweg   96052
+Giselastraße   96049
+Goethestraße   96052
+Gollwitzerstraße   96052
+Gönnerstraße   96050
+Graf-Arnold-Straße   96049
+Grafensteinstraße   96052
+Graf-Stauffenberg-Platz   96047
+Gräserfeldweg   96049
+Greiffenbergstraße   96052
+Grüner Markt   96047
+Grünhundsbrunnen   96049
+Gundelsheimer Straße   96052
+Guntherstraße   96049
+Gutenbergstraße   96050
+Guts-Muths-Straße   96050
+Habergasse   96047
+Häckerweg   96049
+Hafenstraße   96052
+Hainstraße   96047
+Hallstadter Straße   96052
+Hans-Birkmayr-Straße   96050
+Hans-Böckler-Straße   96050
+Hans-Morper-Straße   96052
+Hans-Wölfel-Straße   96049
+Harthstraße   96052
+Härtleinstraße   96052
+Hartmannstraße   96050
+Hasengasse   96047
+Hauptwachstraße   96047
+Hedwigstraße   96050
+Hegelstraße   96052
+Heiliggrabstraße   96052
+Heimfriedweg   96052
+Heinkelmannstraße   96050
+Heinrich-Bosch-Steg   96047
+Heinrich-Manz-Straße   96052
+Heinrichsdamm   96047
+Heinrichshöhe   96049
+Heinrichstraße   96047
+Heinrich-Weber-Platz   96052
+Hellerstraße   96047
+Hemmerleinstraße   96050
+Hennebergerstraße   96049
+Herrenstraße   96049
+Hertzstraße   96050
+Herzog-Max-Straße   96047
+Heumannstraße   96050
+Heumarkt   96047
+Heunischstraße   96049
+Hezilostraße   96049
+Hiltnerstraße   96052
+Himmelreichstraße   96052
+Hinrich-Wichern-Straße   96050
+Hinterer Bach   96049
+Hinterer Graben   96047
+Hinterer Sückleinsweg   96049
+Hirschbühlstraße   96050
+Hirtenstraße   96050
+Höcherbühl   96049
+Hohe-Kreuz-Straße   96049
+Hohenlohestraße   96049
+Hohenstauferstraße   96049
+Hohmannstraße   96052
+Hölle   96049
+Holunderweg   96052
+Holzfeldweg   96052
+Holzgartenstraße   96050
+Holzmarkt   96047
+Hopfferstraße   96050
+Hornthalstraße   96047
+Hubertusstraße   96050
+Hüttenfeldstraße   96050
+Ignaz-Wolf-Straße   96050
+Im Domgrund   96049
+Im Färbersgarten   96049
+Im Kapellenschlag   96050
+Im Kramersfeld   96052
+Im Sücklein   96049
+Immenhofweg   96052
+In der Südflur   96050
+Innere Löwenstraße   96047
+Jäckstraße   96052
+Jacobus-von-Hauck-Platz   96047
+Jägerstraße   96050
+Jahnstraße   96050
+Jakobsberg   96049
+Jakobsplatz   96049
+Jesuitenstraße   96047
+Josef-Kindshoven-Straße   96052
+Josef-Manger-Straße   96050
+Joseph-Otto-Kolb-Straße   96052
+Judenstraße   96049
+Kaimsgasse   96052
+Kaipershof   96047
+Kammermeisterweg   96052
+Kammstraße   96052
+Kanonikus-Schwab-Straße   96050
+Kantstraße   96052
+Kapellenstraße   96050
+Kapuzinerstraße   96047
+Karmelitenplatz   96049
+Kärntenstraße   96052
+Karolinenstraße   96049
+Kasernstraße   96049
+Kaspar-Schulz-Straße   96052
+Kaspar-Zeuß-Weg   96052
+Kastanienstraße   96050
+Katharinenhof   96050
+Katharinenstraße   96052
+Katzenberg   96049
+Katzheimerstraße   96050
+Kemmerstraße   96052
+Keßlerstraße   96047
+Kettenbrücke   96047
+Kettenbrückstraße   96052
+Kiefernstraße   96050
+Kirschäckerstraße   96052
+Kirschenweg   96050
+Kleberstraße   96047
+Kleebaumsgasse   96049
+Kloster-Banz-Straße   96052
+Kloster-Langheim-Straße   96050
+Klosterstraße   96052
+Klubenspiesweg   96050
+Köhlerstraße   96049
+König-Konrad-Straße   96049
+Konrad-Fink-Straße   96052
+Kopernikusstraße   96052
+Koppenhofgasse   96050
+Kornstraße   96050
+Kroatengasse   96049
+Kronacher Straße   96052
+Küchelstraße   96047
+Kunigundendamm   96050
+Kunigundenruhstraße   96050
+Lagerhausstraße   96052
+Langackerweg   96049
+Lange Straße   96047
+Laubanger   96052
+Laurenziplatz   96049
+Laurenzistraße   96049
+Lebergasse   96047
+Leinrittsteg   96049
+Lerchenweg   96050
+Letzengasse   96052
+Leyackerweg   96049
+Lichtenhaidestraße   96052
+Lindenanger   96050
+Linderstraße   96052
+Looshornweg   96050
+Lorbersgasse   96049
+Löwenbrücke   96047
+Ludwigshöhe   96049
+Ludwigstraße   96052
+Lugbank   96049
+Luisenstraße   96047
+Luitpoldbrücke   96047
+Luitpoldstraße   96052
+Magazinstraße   96052
+Magdalenenstraße   96050
+Mainbrücke Oberhaid   96052
+Mainluststraße   96049
+Mainstraße   96052
+Mannlehenweg   96050
+Mannshalm   96049
+Margaretendamm   96052
+Maria-Ward-Straße   96047
+Marienbrücke   96047
+Marienplatz   96050
+Marienstraße   96050
+Markusbrücke   96047
+Markusplatz   96047
+Markusstraße   96047
+Martin-Luther-Straße   96050
+Maternstraße   96049
+Mattenheimerstraße   96050
+Mautgasse   96047
+Maximiliansplatz   96047
+Max-Planck-Straße   96050
+Meinhardtstraße   96049
+Memmelsdorfer Straße   96052
+Meranierstraße   96049
+Messerschmittstraße   96052
+Michel-Raulino-Straße   96052
+Michelsberg   96049
+Michelsberger Straße   96049
+Milchweg   96049
+Mittelbachstraße   96052
+Mittelstraße   96052
+Mittlere Seelgasse   96049
+Mittlere Sterngasse   96050
+Mittlerer Kaulberg   96049
+Mohnstraße   96050
+Molitorgasse   96049
+Moosstraße   96050
+Mühlwörth   96047
+Müllerfeldweg   96049
+Münchner Ring   96047
+Münzmeisterstraße   96052
+Mußstraße   96047
+Mutschelleweg   96052
+Nebingerhof   96047
+Neue Bughofer Straße   96050
+Neuerbstraße   96052
+Nikolaus-Lenau-Ring   96050
+Nonnenbrücke   96047
+Nürnberger Straße   96050
+Obere Brücke   96047
+Obere Dorotheenstraße   96049
+Obere Karolinenstraße   96049
+Obere Königstraße   96052
+Obere Mühlbrücke   96049
+Obere Sandstraße   96049
+Obere Schildstraße   96050
+Obere Seelgasse   96049
+Obere Sterngasse   96050
+Oberer Kaulberg   96049
+Oberer Leinritt   96049
+Oberer Stephansberg   96049
+Obstmarkt   96047
+Ohlmüllerstraße   96052
+Ohmstraße   96050
+Ottoplatz   96049
+Ottostraße   96047
+Panzerleite   96049
+Pappelweg   96050
+Paul-Keller-Ring   96052
+Pestalozzistraße   96052
+Petrinistraße   96052
+Peuntstraße   96050
+Pfahlplätzchen   96049
+Pfarrfeldstraße   96050
+Pfarrgasse   96049
+Pfeuferstraße   96047
+Pfisterstraße   96050
+Platanenallee   96050
+Plattengasse   96050
+Plattnergasse   96047
+Pleinserhof   96052
+Pödeldorfer Straße   96050
+Prälat-Meixner-Platz   96047
+Promenadestraße   96047
+Raatschkatlweg   96050
+Regensburger Ring   96047
+Regnitzstraße   96052
+Reitersfeldweg   96052
+Rennsteig   96052
+Residenzstraße   96049
+Reußstraße   96052
+Rhein-Main-Donau-Damm   96047
+Rheinstraße   96052
+Richard-Wagner-Straße   96047
+Richthofenstraße   96052
+Riegelhofgasse   96049
+Riemenschneiderstraße   96052
+Ringleinsgasse   96049
+Rinnersteig   96049
+Robert-Bosch-Straße   96050
+Rodezstraße   96052
+Röntgenstraße   96050
+Roppeltsgasse   96049
+Rosengasse   96047
+Rosmarinweg   96050
+Rößleinsweg   96049
+Rotdornweg   96052
+Rotensteinstraße   96050
+Röthelbachweg   96049
+Rothofleite   96049
+Rübezahlweg   96049
+Rückertstraße   96052
+Rüdelweg   96050
+Salierstraße   96049
+Sandbad   96049
+Schellenbergerstraße   96049
+Scheubelstraße   96050
+Schiffbauplatz   96047
+Schildstraße   96050
+Schillerplatz   96047
+Schimmelsgasse   96049
+Schlagfeldweg   96049
+Schlehdornweg   96052
+Schlüsselbergerstraße   96049
+Schlüsselstraße   96047
+Schönbornstraße   96047
+Schönleinsplatz   96047
+Schranne   96049
+Schrottenberggasse   96049
+Schubertshof   96052
+Schulgasse   96047
+Schulplatz   96049
+Schützenstraße   96047
+Schwarze Brücke   96049
+Schwarzenbergstraße   96050
+Schweitzerstraße   96052
+Seehofstraße   96052
+Seinsheimstraße   96052
+Siechenstraße   96052
+Siemensstraße   96050
+Sodenstraße   96047
+Sonnenplätzchen   96049
+Spiegelgraben   96052
+Spitalstraße   96052
+St.-Getreu-Straße   96049
+St.-Wolfgang-Platz   96050
+Staffelbergweg   96049
+Stangsstraße   96047
+Starkenfeldstraße   96050
+Stauffenbergstraße   96052
+Stazinäriweg   96050
+Stegauracher Straße   96049
+Steinertstraße   96047
+Steinweg   96050
+Stephansplatz   96049
+Sternwartstraße   96049
+Storchsgasse   96049
+Strickerstraße   96050
+Strullendorfer Straße   96050
+Sudetenstraße   96050
+Suidgerstraße   96049
+Süßholzweg   96050
+Sutte   96049
+Synagogenplatz   96047
+Teufelsgraben   96049
+Theatergassen   96047
+Theilerstraße   96052
+Theodor-Heuss-Ring   96050
+Theresienstraße   96050
+Theuerstadt   96050
+Thorackerstraße   96052
+Tocklergasse   96052
+Tränkgasse   96052
+Trautmannstraße   96052
+Treustraße   96050
+Trimbergstraße   96050
+Troppauplatz   96052
+Ulanenplatz   96050
+Ulmenstraße   96050
+Unterauracher Weg   96049
+Untere Brücke   96049
+Untere Königstraße   96052
+Untere Mühlbrücke   96047
+Untere Sandstraße   96049
+Untere Seelgasse   96049
+Untere Sterngasse   96050
+Unterer Kaulberg   96049
+Unterer Stephansberg   96049
+Urbanstraße   96047
+Valentin-Becker-Straße   96049
+Valentin-Rathgeber-Straße   96049
+Veit-Stoß-Straße   96052
+Viktor-von-Scheffel-Straße   96049
+Villachstraße   96052
+Volkfeldstraße   96049
+Von-Ketteler-Straße   96050
+Von-Reider-Straße   96049
+Vorderer Bach   96049
+Vorderer Graben   96047
+Wacholderweg   96052
+Waizendorfer Straße   96049
+Walnußweg   96050
+Wassermannstraße   96052
+Weegmannufer   96047
+Weide   96047
+Weidendamm   96047
+Weinbergweg   96049
+Weißenburgstraße   96052
+Wetzelstraße   96047
+Wildensorger Straße   96049
+Wilhelmsplatz   96047
+Wilhelmstraße   96047
+Willy-Lessing-Straße   96047
+Wörthstraße   96052
+Wunderburg   96050
+Würzburger Straße   96049
+Zeppelinstraße   96052
+Ziegelgasse   96049
+Ziegelhof   96049
+Zinkenwörth   96047
+Zollnergäßchen   96052
+Zum Eichelberg   96050
+Zweidlerweg   96050
+Zwerggasse   96047
