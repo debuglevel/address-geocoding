@@ -1,5 +1,6 @@
 package de.debuglevel.addressgeocoding.geocoding.photon
 
+import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Coordinate
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
 import io.micronaut.context.annotation.Requires
@@ -44,7 +45,7 @@ class PhotonGeocoder(
 
         if (resultset.features.isEmpty()) {
             logger.warn { "No address found for '$address'" }
-            throw NoAddressesFoundException(address)
+            throw AddressNotFoundException(address)
         }
 
         val feature = resultset.features.first()
@@ -53,7 +54,4 @@ class PhotonGeocoder(
         logger.debug("Searched address '$address': $feature")
         return feature
     }
-
-    class NoAddressesFoundException(address: String) :
-        Exception("No Photon results found for address '$address'")
 }

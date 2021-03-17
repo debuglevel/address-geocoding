@@ -1,5 +1,6 @@
 package de.debuglevel.addressgeocoding.geocoding.nominatim
 
+import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Coordinate
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
 import fr.dudie.nominatim.client.JsonNominatimClient
@@ -90,7 +91,7 @@ class NominatimGeocoder(
 
         if (addresses.isEmpty()) {
             logger.warn { "No address found for '$address'" }
-            throw NoAddressesFoundException(address)
+            throw AddressNotFoundException(address)
         }
 
         val result = addresses[0]
@@ -99,7 +100,4 @@ class NominatimGeocoder(
         logger.debug("Searched address '$address': ${result.displayName}")
         return result
     }
-
-    class NoAddressesFoundException(address: String) :
-        Exception("No Nominatim results found for address '$address'")
 }
