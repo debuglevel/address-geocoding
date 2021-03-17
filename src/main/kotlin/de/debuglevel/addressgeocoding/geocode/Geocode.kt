@@ -19,5 +19,5 @@ data class Geocode(
     @DateCreated
     var createdOn: LocalDateTime = LocalDateTime.now(),
     @DateUpdated
-    var lastModified: LocalDateTime = LocalDateTime.now(),
+    var lastModifiedOn: LocalDateTime = LocalDateTime.now(),
 )
