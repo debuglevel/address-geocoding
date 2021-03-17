@@ -8,6 +8,7 @@ data class GetGeocodeResponse(
     val address: String,
     val longitude: Double?,
     val latitude: Double?,
+    val failedAttempts: Int,
     val createdOn: LocalDateTime?,
     val lastModifiedOn: LocalDateTime?,
 ) {
@@ -16,6 +17,7 @@ data class GetGeocodeResponse(
         geocode.address,
         geocode.longitude,
         geocode.latitude,
+        geocode.failedAttempts,
         geocode.createdOn,
         geocode.lastModifiedOn,
     )

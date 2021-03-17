@@ -56,6 +56,7 @@ class GeocodeService(
             address = geocode.address
             longitude = geocode.longitude
             latitude = geocode.latitude
+            failedAttempts = geocode.failedAttempts
         }
 
         val updatedGeocode = geocodeRepository.update(updateGeocode)
@@ -117,6 +118,7 @@ class GeocodeService(
             geocode.apply {
                 latitude = coordinates.latitude
                 longitude = coordinates.longitude
+                failedAttempts = 0
             }
 
             update(geocode.id!!, geocode)
@@ -124,6 +126,12 @@ class GeocodeService(
             logger.debug { "Geocoded $geocode" }
         } catch (e: AddressNotFoundException) {
             logger.debug { "Geocoding $geocode failed as address is unknown to geocoder" }
+
+            geocode.apply {
+                failedAttempts += 1
+            }
+
+            update(geocode.id!!, geocode)
         }
     }
 
