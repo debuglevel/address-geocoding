@@ -1,5 +1,6 @@
 package de.debuglevel.addressgeocoding.geocode
 
+import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
 import io.micronaut.data.exceptions.EmptyResultException
 import io.micronaut.scheduling.annotation.Scheduled
@@ -108,15 +109,19 @@ class GeocodeService(
     fun geocode(geocode: Geocode) {
         logger.debug { "Geocoding $geocode..." }
 
-        val coordinates = geocoder.getCoordinates(geocode.address)
-        geocode.apply {
-            latitude = coordinates.latitude
-            longitude = coordinates.longitude
+        try {
+            val coordinates = geocoder.getCoordinates(geocode.address)
+            geocode.apply {
+                latitude = coordinates.latitude
+                longitude = coordinates.longitude
+            }
+
+            update(geocode.id!!, geocode)
+
+            logger.debug { "Geocoded $geocode" }
+        } catch (e: AddressNotFoundException) {
+            logger.debug { "Geocoding $geocode failed as address is unknown to geocoder" }
         }
-
-        update(geocode.id!!, geocode)
-
-        logger.debug { "Geocoded $geocode" }
     }
 
     class EntityNotFoundException(criteria: Any) : Exception("Entity '$criteria' does not exist.")
