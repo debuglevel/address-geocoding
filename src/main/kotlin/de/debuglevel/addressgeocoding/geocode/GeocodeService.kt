@@ -96,7 +96,10 @@ class GeocodeService(
         logger.debug { "Deleted $countDeleted of $countBefore geocodes, $countAfter remaining" }
     }
 
-    @Scheduled(fixedDelay = "60s", initialDelay = "30s")
+    @Scheduled(
+        fixedDelay = "\${app.address-geocoding.missing-geocode-update.interval:60s}",
+        initialDelay = "\${app.address-geocoding.missing-geocode-update.initial-delay:60s}"
+    )
     fun updateMissingGeocodes() {
         logger.debug { "Geocoding items with missing longitude and latitude..." }
 

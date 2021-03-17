@@ -1,5 +1,11 @@
 app:
   address-geocoding:
+    # missing geocodes (i.e. also newly submitted ones) are checked in a regular interval
+    missing-geocode-update:
+      # wait this duration after startup
+      initial-delay: 60s
+      # wait this duration between checks
+      interval: 60s
     geocoders:
       googlemaps:
         enabled: false
