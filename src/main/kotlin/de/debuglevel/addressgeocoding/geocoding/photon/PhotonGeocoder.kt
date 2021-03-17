@@ -16,7 +16,7 @@ class PhotonGeocoder(
     private val logger = KotlinLogging.logger {}
 
     override fun getCoordinates(address: String): Coordinate {
-        logger.debug { "Getting location for address '$address'..." }
+        logger.debug { "Getting coordinates for address '$address'..." }
 
         val feature = getPhotonFeature(address)
 
@@ -25,7 +25,7 @@ class PhotonGeocoder(
             feature.geometry.coordinates[1]
         )
 
-        logger.debug { "Got location for address '$address': $coordinate" }
+        logger.debug { "Got coordinates for address '$address': $coordinate" }
         return coordinate
     }
 

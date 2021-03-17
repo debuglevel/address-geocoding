@@ -23,7 +23,7 @@ class NominatimGeocoder(
     private val logger = KotlinLogging.logger {}
 
     override fun getCoordinates(address: String): Coordinate {
-        logger.debug { "Getting location for address '$address'..." }
+        logger.debug { "Getting coordinates for address '$address'..." }
 
         val result = getNominatimAddress(address)
 
@@ -32,7 +32,7 @@ class NominatimGeocoder(
             result.latitude
         )
 
-        logger.debug { "Got location for address '$address': $location" }
+        logger.debug { "Got coordinates for address '$address': $location" }
         return location
     }
 
