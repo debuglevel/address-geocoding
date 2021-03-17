@@ -21,7 +21,7 @@ data class Properties(
     @JsonProperty("name")
     val name: String?,
     @JsonProperty("osm_id")
-    val osmId: Int?,
+    val osmId: Long?,
     @JsonProperty("osm_key")
     val osmKey: String?,
     @JsonProperty("osm_type")
