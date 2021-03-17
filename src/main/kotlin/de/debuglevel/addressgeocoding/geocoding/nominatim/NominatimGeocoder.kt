@@ -101,5 +101,5 @@ class NominatimGeocoder(
     }
 
     class NoAddressesFoundException(address: String) :
-        Exception("No Nominatim API results found for address '$address'")
+        Exception("No Nominatim results found for address '$address'")
 }

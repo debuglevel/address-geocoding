@@ -55,5 +55,5 @@ class PhotonGeocoder(
     }
 
     class NoAddressesFoundException(address: String) :
-        Exception("No Nominatim API results found for address '$address'")
+        Exception("No Photon results found for address '$address'")
 }
