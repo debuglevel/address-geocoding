@@ -1,6 +1,7 @@
 package de.debuglevel.addressgeocoding.geocode
 
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
+import io.micronaut.data.exceptions.EmptyResultException
 import io.micronaut.scheduling.annotation.Scheduled
 import mu.KotlinLogging
 import java.util.*
@@ -29,7 +30,15 @@ class GeocodeService(
     fun add(geocode: Geocode): Geocode {
         logger.debug { "Adding geocode '$geocode'..." }
 
-        val savedGeocode = geocodeRepository.save(geocode)
+        val savedGeocode = try {
+            logger.debug { "Searching if geocode '$geocode' already exists..." }
+            val savedGeocode = geocodeRepository.find(geocode.address)
+            logger.debug { "Using already existing geocode '$geocode'..." }
+            savedGeocode
+        } catch (e: EmptyResultException) {
+            logger.debug { "Saving not-already existing geocode '$geocode'..." }
+            geocodeRepository.save(geocode)
+        }
 
         // TODO: should trigger an async geocode() call
 
