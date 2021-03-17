@@ -42,4 +42,17 @@ $ curl --location --request GET 'http://localhost:8080/persons/3e266d3b-df74-491
 
 # Configuration
 
-There is a `application.yml` included in the jar file. Its content can be modified and saved as a separate `application.yml` on the level of the jar file. Configuration can also be applied via the other supported ways of Micronaut (see <https://docs.micronaut.io/latest/guide/index.html#config>). For Docker, the configuration via environment variables is the most interesting one (see `docker-compose.yml`).
+There is a `application.yml` included in the jar file. Its content can be modified and saved as a
+separate `application.yml` on the level of the jar file. Configuration can also be applied via the other supported ways
+of Micronaut (see <https://docs.micronaut.io/latest/guide/index.html#config>). For Docker, the configuration via
+environment variables is the most interesting one (see `docker-compose.yml`).
+
+# Development
+
+## Batch POST addresses
+
+Might be useful for testing or for initial population
+
+```bash
+cat teststrassen.txt | while read line ; do curl --location --request POST 'http://localhost:8080/geocodes/' --header 'Content-Type: application/json' --data-raw "{ \"address\": \"$line\" }"; done
+```
