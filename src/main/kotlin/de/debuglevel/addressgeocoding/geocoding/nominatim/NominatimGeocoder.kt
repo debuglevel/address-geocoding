@@ -66,10 +66,10 @@ class NominatimGeocoder(
         val lastRequestOn = this.lastRequestOn
         if (lastRequestOn != null) {
             val nextRequestDateTime = lastRequestOn.plusNanos(nominatimProperties.waitBetweenRequests)
-            val waitingTime = ChronoUnit.MILLIS.between(LocalDateTime.now(), nextRequestDateTime)
-            if (waitingTime > 0) {
-                logger.debug { "Waiting ${waitingTime}ms until the next request to Nominatim is allowed..." }
-                Thread.sleep(waitingTime)
+            val waitingTimeMilliseconds = ChronoUnit.MILLIS.between(LocalDateTime.now(), nextRequestDateTime)
+            if (waitingTimeMilliseconds > 0) {
+                logger.debug { "Waiting ${waitingTimeMilliseconds}ms until the next request to Nominatim is allowed..." }
+                Thread.sleep(waitingTimeMilliseconds)
             }
         }
     }
