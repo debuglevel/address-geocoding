@@ -6,6 +6,13 @@ app:
       initial-delay: 60s
       # wait this duration between checks
       interval: 60s
+    # after failed attempts, geocoding is reattempted after a duration
+    failed-geocode-reattempt:
+      # the count of failed attempts is multiplied with this interval.
+      # after the third attempt, it is tried again after 3*1d=3days
+      interval-multiplicator: 1d
+      # a new attempt is made at least after this duration, even if the calculation above would be greater.
+      maximum-interval: 30d
     geocoders:
       googlemaps:
         enabled: false
