@@ -2,9 +2,11 @@ package de.debuglevel.addressgeocoding.geocode
 
 import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
+import io.micronaut.context.annotation.Property
 import io.micronaut.data.exceptions.EmptyResultException
 import io.micronaut.scheduling.annotation.Scheduled
 import mu.KotlinLogging
+import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Singleton
@@ -14,6 +16,7 @@ import javax.inject.Singleton
 class GeocodeService(
     private val geocodeRepository: GeocodeRepository,
     private val geocoder: Geocoder,
+    @Property(name = "app.address-geocoding.outdated.interval") val outdatingInterval: Duration,
 ) {
     private val logger = KotlinLogging.logger {}
 
@@ -107,9 +110,31 @@ class GeocodeService(
         logger.debug { "Geocoding items with missing longitude and latitude..." }
 
         // TODO: get only those with lon==null or/and lat==null from database
+        // TODO:  that's not useful since isOutdated() is also checked
         geocodeRepository.findAll()
-            .filter { it.latitude == null || it.longitude == null }
+            .filter { isMissingData(it) || isOutdated(it) }
             .forEach { geocode(it) }
+    }
+
+    private fun isMissingData(it: Geocode): Boolean {
+        logger.trace { "Checking if geocode $it has missing data..." }
+        val isMissingData = it.latitude == null || it.longitude == null
+        logger.trace { "Checked if geocode $it has missing data: $isMissingData" }
+        return isMissingData
+    }
+
+    private fun isOutdated(it: Geocode): Boolean {
+        logger.trace { "Checking if geocode $it is outdated (outdating-interval=$outdatingInterval)..." }
+        val lastGeocodingOn = it.lastGeocodingOn
+
+        val outdated = when {
+            lastGeocodingOn == null -> false
+            lastGeocodingOn.plus(outdatingInterval) < LocalDateTime.now() -> true
+            else -> false
+        }
+
+        logger.trace { "Checked if geocode $it is outdated (outdating-interval=$outdatingInterval): $outdated" }
+        return outdated
     }
 
     fun geocode(geocode: Geocode) {

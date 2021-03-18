@@ -13,6 +13,9 @@ app:
       interval-multiplicator: 1d
       # a new attempt is made at least after this duration, even if the calculation above would be greater.
       maximum-interval: 30d
+    outdated:
+      # duration after which a geocode is assumed to be outdated and should be requested again
+      interval: 90d
     geocoders:
       googlemaps:
         enabled: false
@@ -55,7 +58,7 @@ micronaut:
 
 logger:
   levels:
-    de.debuglevel: DEBUG
+    de.debuglevel: TRACE
     io.micronaut.http.client: DEBUG
     io.micronaut.http.server: DEBUG
     io.micronaut.data.query: DEBUG
