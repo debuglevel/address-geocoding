@@ -17,6 +17,8 @@ class GeocodeService(
     private val geocodeRepository: GeocodeRepository,
     private val geocoder: Geocoder,
     @Property(name = "app.address-geocoding.outdated.interval") val outdatingInterval: Duration,
+    @Property(name = "app.address-geocoding.failed-geocode-reattempt.interval-multiplicator") val intervalMultiplicator: Duration,
+    @Property(name = "app.address-geocoding.failed-geocode-reattempt.maximum-interval") val maximumBackoffInterval: Duration,
 ) {
     private val logger = KotlinLogging.logger {}
 
@@ -112,8 +114,45 @@ class GeocodeService(
         // TODO: get only those with lon==null or/and lat==null from database
         // TODO:  that's not useful since isOutdated() is also checked
         geocodeRepository.findAll()
-            .filter { isMissingData(it) || isOutdated(it) }
+            .filter { (isMissingData(it) && isBackedOff(it)) || isOutdated(it) }
             .forEach { geocode(it) }
+    }
+
+    private fun isBackedOff(geocode: Geocode): Boolean {
+        logger.trace { "Checking if geocode $geocode is backed off..." }
+
+        val lastGeocodingOn = geocode.lastGeocodingOn
+        val isBackedOff = if (lastGeocodingOn == null) {
+            logger.trace { "Geocode $geocode was not geocoded before; it's backed off therefore." }
+            true
+        } else {
+            val backoffDuration = getBackoffDuration(geocode)
+            val nextAttemptOn = lastGeocodingOn.plus(backoffDuration)
+            logger.trace { "Next attempt for $geocode is after $nextAttemptOn" }
+
+            val isBackedOff = nextAttemptOn < LocalDateTime.now()
+            isBackedOff
+        }
+
+        logger.trace { "Checked if geocode $geocode is backed off: $isBackedOff" }
+        return isBackedOff
+    }
+
+    private fun getBackoffDuration(geocode: Geocode): Duration {
+        logger.trace { "Getting backoff duration for $geocode..." }
+
+        var backoffDuration = intervalMultiplicator.multipliedBy(geocode.failedAttempts.toLong())
+        logger.trace { "Backoff duration for $geocode is $backoffDuration" }
+
+        backoffDuration = if (backoffDuration > maximumBackoffInterval) {
+            logger.trace { "Shorted backoff duration to $maximumBackoffInterval" }
+            maximumBackoffInterval
+        } else {
+            backoffDuration
+        }
+
+        logger.trace { "Got backoff duration for $geocode: $backoffDuration" }
+        return backoffDuration
     }
 
     private fun isMissingData(it: Geocode): Boolean {
