@@ -114,7 +114,8 @@ class GeocodeService(
         // TODO: get only those with lon==null or/and lat==null from database
         // TODO:  that's not useful since isOutdated() is also checked
         geocodeRepository.findAll()
-            .filter { (isMissingData(it) && isBackedOff(it)) || isOutdated(it) }
+            .filter { isMissingData(it) || isOutdated(it) }
+            .filter { isBackedOff(it) }
             .forEach { geocode(it) }
     }
 
