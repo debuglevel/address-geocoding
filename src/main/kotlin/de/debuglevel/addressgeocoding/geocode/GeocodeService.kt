@@ -1,5 +1,6 @@
 package de.debuglevel.addressgeocoding.geocode
 
+import de.debuglevel.addressgeocoding.backoff.BackoffUtils
 import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
 import io.micronaut.context.annotation.Property
@@ -121,39 +122,14 @@ class GeocodeService(
 
     private fun isBackedOff(geocode: Geocode): Boolean {
         logger.trace { "Checking if geocode $geocode is backed off..." }
-
-        val lastGeocodingOn = geocode.lastGeocodingOn
-        val isBackedOff = if (lastGeocodingOn == null) {
-            logger.trace { "Geocode $geocode was not geocoded before; it's backed off therefore." }
-            true
-        } else {
-            val backoffDuration = getBackoffDuration(geocode)
-            val nextAttemptOn = lastGeocodingOn.plus(backoffDuration)
-            logger.trace { "Next attempt for $geocode is after $nextAttemptOn" }
-
-            val isBackedOff = nextAttemptOn < LocalDateTime.now()
-            isBackedOff
-        }
-
+        val isBackedOff = BackoffUtils.isBackedOff(
+            geocode.lastGeocodingOn,
+            geocode.failedAttempts.toLong(),
+            intervalMultiplicator,
+            maximumBackoffInterval
+        )
         logger.trace { "Checked if geocode $geocode is backed off: $isBackedOff" }
         return isBackedOff
-    }
-
-    private fun getBackoffDuration(geocode: Geocode): Duration {
-        logger.trace { "Getting backoff duration for $geocode..." }
-
-        var backoffDuration = intervalMultiplicator.multipliedBy(geocode.failedAttempts.toLong())
-        logger.trace { "Backoff duration for $geocode is $backoffDuration" }
-
-        backoffDuration = if (backoffDuration > maximumBackoffInterval) {
-            logger.trace { "Shorted backoff duration to $maximumBackoffInterval" }
-            maximumBackoffInterval
-        } else {
-            backoffDuration
-        }
-
-        logger.trace { "Got backoff duration for $geocode: $backoffDuration" }
-        return backoffDuration
     }
 
     private fun isMissingData(geocode: Geocode): Boolean {
