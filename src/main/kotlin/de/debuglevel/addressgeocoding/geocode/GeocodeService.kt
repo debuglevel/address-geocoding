@@ -156,16 +156,16 @@ class GeocodeService(
         return backoffDuration
     }
 
-    private fun isMissingData(it: Geocode): Boolean {
-        logger.trace { "Checking if geocode $it has missing data..." }
-        val isMissingData = it.latitude == null || it.longitude == null
-        logger.trace { "Checked if geocode $it has missing data: $isMissingData" }
+    private fun isMissingData(geocode: Geocode): Boolean {
+        logger.trace { "Checking if geocode $geocode has missing data..." }
+        val isMissingData = geocode.latitude == null || geocode.longitude == null
+        logger.trace { "Checked if geocode $geocode has missing data: $isMissingData" }
         return isMissingData
     }
 
-    private fun isOutdated(it: Geocode): Boolean {
-        logger.trace { "Checking if geocode $it is outdated (outdating-interval=$outdatingInterval)..." }
-        val lastGeocodingOn = it.lastGeocodingOn
+    private fun isOutdated(geocode: Geocode): Boolean {
+        logger.trace { "Checking if geocode $geocode is outdated (outdating-interval=$outdatingInterval)..." }
+        val lastGeocodingOn = geocode.lastGeocodingOn
 
         val outdated = when {
             lastGeocodingOn == null -> false
@@ -173,7 +173,7 @@ class GeocodeService(
             else -> false
         }
 
-        logger.trace { "Checked if geocode $it is outdated (outdating-interval=$outdatingInterval): $outdated" }
+        logger.trace { "Checked if geocode $geocode is outdated (outdating-interval=$outdatingInterval): $outdated" }
         return outdated
     }
 
