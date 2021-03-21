@@ -3,6 +3,7 @@ package de.debuglevel.addressgeocoding.geocode
 import de.debuglevel.addressgeocoding.backoff.BackoffUtils
 import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
+import de.debuglevel.addressgeocoding.outdate.OutdateUtils
 import io.micronaut.context.annotation.Property
 import io.micronaut.data.exceptions.EmptyResultException
 import io.micronaut.scheduling.annotation.Scheduled
@@ -141,14 +142,7 @@ class GeocodeService(
 
     private fun isOutdated(geocode: Geocode): Boolean {
         logger.trace { "Checking if geocode $geocode is outdated (outdating-interval=$outdatingInterval)..." }
-        val lastGeocodingOn = geocode.lastGeocodingOn
-
-        val outdated = when {
-            lastGeocodingOn == null -> false
-            lastGeocodingOn.plus(outdatingInterval) < LocalDateTime.now() -> true
-            else -> false
-        }
-
+        val outdated = OutdateUtils.isOutdated(geocode.lastGeocodingOn, outdatingInterval)
         logger.trace { "Checked if geocode $geocode is outdated (outdating-interval=$outdatingInterval): $outdated" }
         return outdated
     }
