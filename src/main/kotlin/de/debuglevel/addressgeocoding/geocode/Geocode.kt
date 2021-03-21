@@ -33,8 +33,14 @@ data class Geocode(
      * How many times geocoding failed. Reset to 0 on success.
      */
     var failedAttempts: Int = 0,
+    /**
+     * When created in the database
+     */
     @DateCreated
     var createdOn: LocalDateTime = LocalDateTime.now(),
+    /**
+     * When last modified in the database
+     */
     @DateUpdated
     var lastModifiedOn: LocalDateTime = LocalDateTime.now(),
 )
