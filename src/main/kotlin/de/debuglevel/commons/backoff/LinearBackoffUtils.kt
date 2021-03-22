@@ -51,17 +51,17 @@ object LinearBackoffUtils {
     fun getBackoffDuration(
         failedAttempts: Long,
         multiplierDuration: Duration,
-        maximumBackoffDuration: Duration // TODO: allow to be null to grow backoff duration infinite
+        maximumBackoffDuration: Duration? = null
     ): Duration {
         require(failedAttempts >= 0) { "Failed attempts must be non-negative." }
         require(!multiplierDuration.isNegative) { "Interval multiplier must be non-negative." }
-        require(!maximumBackoffDuration.isNegative) { "Maximum backoff duration must be non-negative." }
+        require(maximumBackoffDuration == null || !maximumBackoffDuration.isNegative) { "Maximum backoff duration must be non-negative." }
         logger.trace { "Getting backoff duration for failedAttempts=$failedAttempts, multiplierDuration=$multiplierDuration, maximumBackoffInterval=$maximumBackoffDuration..." }
 
         var backoffDuration = multiplierDuration.multipliedBy(failedAttempts)
         logger.trace { "Backoff duration for $failedAttempts*$multiplierDuration=$backoffDuration" }
 
-        backoffDuration = if (backoffDuration > maximumBackoffDuration) {
+        backoffDuration = if (maximumBackoffDuration == null && backoffDuration > maximumBackoffDuration) {
             logger.trace { "Shorted backoff duration $backoffDuration to $maximumBackoffDuration" }
             maximumBackoffDuration
         } else {
