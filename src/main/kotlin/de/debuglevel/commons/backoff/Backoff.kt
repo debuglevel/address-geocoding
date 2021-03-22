@@ -3,8 +3,6 @@ package de.debuglevel.commons.backoff
 import mu.KotlinLogging
 import java.time.Duration
 import java.time.LocalDateTime
-import kotlin.math.roundToLong
-import kotlin.random.Random
 
 abstract class Backoff {
     private val logger = KotlinLogging.logger {}
@@ -74,7 +72,7 @@ abstract class Backoff {
         logger.trace { "Backoff duration: $backoffDuration" }
 
         if (randomSeed != null) {
-            backoffDuration = randomizeDuration(randomSeed, backoffDuration, maximumRandomDifference)
+            backoffDuration = DurationRandomizer.randomizeDuration(backoffDuration, maximumRandomDifference, randomSeed)
         }
 
         backoffDuration = if (maximumBackoffDuration != null && backoffDuration > maximumBackoffDuration) {
@@ -86,27 +84,6 @@ abstract class Backoff {
 
         logger.trace { "Got backoff duration for failedAttempts=$failedAttempts, multiplierDuration=$multiplierDuration, maximumBackoffInterval=$maximumBackoffDuration: $backoffDuration" }
         return backoffDuration
-    }
-
-    /**
-     * Get a random duration
-     * @param randomSeed A seed for calculating a random part of the duration (should be tied to an item and only change when the item is modified, i.e. hashcode is a good choice); null to disable random part in duration.
-     * @param duration The original backoff duration to add some randomness to
-     * @param maximumDifference The maximum difference to multiply to the backoff duration
-     *
-     * maximumDifference = 0.25 and duration = 1m result in a range from 0.75m to 1.25m
-     */
-    private fun randomizeDuration(randomSeed: Int, duration: Duration, maximumDifference: Double): Duration {
-        logger.trace { "Randomizing duration $duration..." }
-        val random = Random(randomSeed)
-
-        val durationMilliseconds = duration.toMillis()
-        val differenceMultiplier = random.nextDouble(1 - maximumDifference, 1 + maximumDifference)
-        val randomizedDurationSeconds = durationMilliseconds * differenceMultiplier
-        val randomizedDuration = Duration.ofMillis(randomizedDurationSeconds.roundToLong())
-
-        logger.trace { "Randomized duration $duration: $randomizedDuration" }
-        return randomizedDuration
     }
 
     /**
