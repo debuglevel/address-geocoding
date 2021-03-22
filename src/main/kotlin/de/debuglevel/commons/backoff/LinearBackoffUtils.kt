@@ -9,37 +9,36 @@ object LinearBackoffUtils {
 
     /**
      * Checks whether the backoff duration is reached.
-     * @param lastSuccessfulAttemptOn When the last successful attempt was made; null if never // TODO: is this good? what if it fails on the first try? Probably better based on the lastFailedAttempt
+     * @param lastAttemptOn When the last attempt was made; null if never
      * @param failedAttempts How many failed attempts were made so far
      * @param intervalMultiplicator Which duration should be added for each failed attempt
      * @param maximumBackoffDuration The maximum duration to backoff (to prevent very large backoff durations)
      */
     fun isBackedOff(
-        lastSuccessfulAttemptOn: LocalDateTime?,
+        lastAttemptOn: LocalDateTime?,
         failedAttempts: Long,
         intervalMultiplicator: Duration,
         maximumBackoffDuration: Duration
     ): Boolean {
-        // TODO: if lastSuccessfulAttemptOn is not null, it must not be in the future
+        require(lastAttemptOn == null || lastAttemptOn < LocalDateTime.now()) { "Last attempt must not be in the future." }
         require(failedAttempts >= 0) { "Failed attempts must be non-negative." }
         require(!intervalMultiplicator.isNegative) { "Interval multiplicator must be non-negative." }
         require(!maximumBackoffDuration.isNegative) { "Maximum backoff duration must be non-negative." }
+        logger.trace { "Checking if backed off..." }
 
-        logger.trace { "Checking if is backed off..." }
-
-        val isBackedOff = if (lastSuccessfulAttemptOn == null) {
-            logger.trace { "Empty last successful attempt; it's backed off therefore." }
+        val isBackedOff = if (lastAttemptOn == null) {
+            logger.trace { "Empty last attempt; it's backed off therefore." }
             true
         } else {
             val backoffDuration = getBackoffDuration(failedAttempts, intervalMultiplicator, maximumBackoffDuration)
-            val nextAttemptOn = lastSuccessfulAttemptOn.plus(backoffDuration)
+            val nextAttemptOn = lastAttemptOn.plus(backoffDuration)
             logger.trace { "Next attempt is after $nextAttemptOn" }
 
             val isBackedOff = nextAttemptOn < LocalDateTime.now()
             isBackedOff
         }
 
-        logger.trace { "Checked if is backed off: $isBackedOff" }
+        logger.trace { "Checked if backed off: $isBackedOff" }
         return isBackedOff
     }
 
