@@ -31,24 +31,34 @@ object LinearBackoffUtils {
         return isBackedOff
     }
 
+    /**
+     * Gets the duration until the next attempt, based on the number of previous failed attempts.
+     * @param failedAttempts How many failed attempts were made so far
+     * @param intervalMultiplicator Which duration should be added for each failed attempt
+     * @param maximumBackoffDuration The maximum duration to backoff (to prevent very large backoff durations)
+     */
     fun getBackoffDuration(
         failedAttempts: Long,
         intervalMultiplicator: Duration,
-        maximumBackoffInterval: Duration
+        maximumBackoffDuration: Duration
     ): Duration {
-        logger.trace { "Getting backoff duration for failedAttempts=$failedAttempts, intervalMultiplicator=$intervalMultiplicator, maximumBackoffInterval=$maximumBackoffInterval..." }
+        require(failedAttempts >= 0) { "Failed attempts must be non-negative." }
+        require(!intervalMultiplicator.isNegative) { "Interval multiplicator must be non-negative." }
+        require(!maximumBackoffDuration.isNegative) { "Maximum backoff duration must be non-negative." }
+
+        logger.trace { "Getting backoff duration for failedAttempts=$failedAttempts, intervalMultiplicator=$intervalMultiplicator, maximumBackoffInterval=$maximumBackoffDuration..." }
 
         var backoffDuration = intervalMultiplicator.multipliedBy(failedAttempts)
-        logger.trace { "Backoff duration for failedAttempts=$failedAttempts, intervalMultiplicator=$intervalMultiplicator, maximumBackoffInterval=$maximumBackoffInterval is $backoffDuration" }
+        logger.trace { "Backoff duration for failedAttempts=$failedAttempts, intervalMultiplicator=$intervalMultiplicator, maximumBackoffInterval=$maximumBackoffDuration is $backoffDuration" }
 
-        backoffDuration = if (backoffDuration > maximumBackoffInterval) {
-            logger.trace { "Shorted backoff duration to $maximumBackoffInterval" }
-            maximumBackoffInterval
+        backoffDuration = if (backoffDuration > maximumBackoffDuration) {
+            logger.trace { "Shorted backoff duration to $maximumBackoffDuration" }
+            maximumBackoffDuration
         } else {
             backoffDuration
         }
 
-        logger.trace { "Got backoff duration for failedAttempts=$failedAttempts, intervalMultiplicator=$intervalMultiplicator, maximumBackoffInterval=$maximumBackoffInterval: $backoffDuration" }
+        logger.trace { "Got backoff duration for failedAttempts=$failedAttempts, intervalMultiplicator=$intervalMultiplicator, maximumBackoffInterval=$maximumBackoffDuration: $backoffDuration" }
         return backoffDuration
     }
 }
