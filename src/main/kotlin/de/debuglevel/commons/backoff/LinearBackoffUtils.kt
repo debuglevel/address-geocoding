@@ -4,7 +4,7 @@ import mu.KotlinLogging
 import java.time.Duration
 import java.time.LocalDateTime
 
-object BackoffUtils {
+object LinearBackoffUtils {
     private val logger = KotlinLogging.logger {}
 
     fun isBackedOff(
