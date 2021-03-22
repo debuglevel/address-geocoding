@@ -26,7 +26,7 @@ data class Geocode(
      */
     var latitude: Double?,
     /**
-     * DateTime when the last attempt to geocoding was made; null is not yet attempted.
+     * DateTime when the last attempt to geocoding was made; null if not yet attempted.
      */
     var lastGeocodingOn: LocalDateTime? = null,
     /**
