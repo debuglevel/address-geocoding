@@ -40,7 +40,7 @@ object LinearBackoffUtils {
     fun getBackoffDuration(
         failedAttempts: Long,
         intervalMultiplicator: Duration,
-        maximumBackoffDuration: Duration
+        maximumBackoffDuration: Duration // TODO: allow to be null to grow backoff duration infinite
     ): Duration {
         require(failedAttempts >= 0) { "Failed attempts must be non-negative." }
         require(!intervalMultiplicator.isNegative) { "Interval multiplicator must be non-negative." }
