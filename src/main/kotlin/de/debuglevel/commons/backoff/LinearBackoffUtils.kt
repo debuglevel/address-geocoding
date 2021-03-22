@@ -7,19 +7,31 @@ import java.time.LocalDateTime
 object LinearBackoffUtils {
     private val logger = KotlinLogging.logger {}
 
+    /**
+     * Checks whether the backoff duration is reached.
+     * @param lastSuccessfulAttemptOn When the last successful attempt was made; null if never // TODO: is this good? what if it fails on the first try? Probably better based on the lastFailedAttempt
+     * @param failedAttempts How many failed attempts were made so far
+     * @param intervalMultiplicator Which duration should be added for each failed attempt
+     * @param maximumBackoffDuration The maximum duration to backoff (to prevent very large backoff durations)
+     */
     fun isBackedOff(
         lastSuccessfulAttemptOn: LocalDateTime?,
         failedAttempts: Long,
         intervalMultiplicator: Duration,
-        maximumBackoffInterval: Duration
+        maximumBackoffDuration: Duration
     ): Boolean {
+        // TODO: if lastSuccessfulAttemptOn is not null, it must not be in the future
+        require(failedAttempts >= 0) { "Failed attempts must be non-negative." }
+        require(!intervalMultiplicator.isNegative) { "Interval multiplicator must be non-negative." }
+        require(!maximumBackoffDuration.isNegative) { "Maximum backoff duration must be non-negative." }
+
         logger.trace { "Checking if is backed off..." }
 
         val isBackedOff = if (lastSuccessfulAttemptOn == null) {
             logger.trace { "Empty last successful attempt; it's backed off therefore." }
             true
         } else {
-            val backoffDuration = getBackoffDuration(failedAttempts, intervalMultiplicator, maximumBackoffInterval)
+            val backoffDuration = getBackoffDuration(failedAttempts, intervalMultiplicator, maximumBackoffDuration)
             val nextAttemptOn = lastSuccessfulAttemptOn.plus(backoffDuration)
             logger.trace { "Next attempt is after $nextAttemptOn" }
 
