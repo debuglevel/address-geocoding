@@ -1,4 +1,4 @@
-package de.debuglevel.addressgeocoding.backoff
+package de.debuglevel.commons.backoff
 
 import mu.KotlinLogging
 import java.time.Duration

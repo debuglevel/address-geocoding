@@ -1,4 +1,4 @@
-package de.debuglevel.addressgeocoding.outdate
+package de.debuglevel.commons.outdate
 
 import mu.KotlinLogging
 import java.time.Duration

@@ -1,9 +1,9 @@
 package de.debuglevel.addressgeocoding.geocode
 
-import de.debuglevel.addressgeocoding.backoff.BackoffUtils
 import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
-import de.debuglevel.addressgeocoding.outdate.OutdateUtils
+import de.debuglevel.commons.backoff.BackoffUtils
+import de.debuglevel.commons.outdate.OutdateUtils
 import io.micronaut.context.annotation.Property
 import io.micronaut.data.exceptions.EmptyResultException
 import io.micronaut.scheduling.annotation.Scheduled
