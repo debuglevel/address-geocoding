@@ -2,7 +2,7 @@ package de.debuglevel.addressgeocoding.geocode
 
 import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
-import de.debuglevel.commons.backoff.LinearBackoffUtils
+import de.debuglevel.commons.backoff.LinearBackoff
 import de.debuglevel.commons.outdate.OutdateUtils
 import io.micronaut.context.annotation.Property
 import io.micronaut.data.exceptions.EmptyResultException
@@ -123,7 +123,7 @@ class GeocodeService(
 
     private fun isBackedOff(geocode: Geocode): Boolean {
         logger.trace { "Checking if geocode $geocode is backed off..." }
-        val isBackedOff = LinearBackoffUtils.isBackedOff(
+        val isBackedOff = LinearBackoff.isBackedOff(
             geocode.lastGeocodingOn,
             geocode.failedAttempts.toLong(),
             intervalMultiplicator,

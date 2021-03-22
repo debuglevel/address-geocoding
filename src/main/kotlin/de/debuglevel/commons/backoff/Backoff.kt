@@ -4,7 +4,7 @@ import mu.KotlinLogging
 import java.time.Duration
 import java.time.LocalDateTime
 
-object LinearBackoffUtils {
+abstract class Backoff {
     private val logger = KotlinLogging.logger {}
 
     /**
@@ -48,27 +48,9 @@ object LinearBackoffUtils {
      * @param multiplierDuration Which duration should be added for each failed attempt.
      * @param maximumBackoffDuration The maximum duration to backoff (to prevent very large backoff durations) or null to allow infinite backoff durations.
      */
-    fun getBackoffDuration(
+    abstract fun getBackoffDuration(
         failedAttempts: Long,
         multiplierDuration: Duration,
         maximumBackoffDuration: Duration? = null
-    ): Duration {
-        require(failedAttempts >= 0) { "Failed attempts must be non-negative." }
-        require(!multiplierDuration.isNegative) { "Duration multiplier must be non-negative." }
-        require(maximumBackoffDuration == null || !maximumBackoffDuration.isNegative) { "Maximum backoff duration must be non-negative or null." }
-        logger.trace { "Getting backoff duration for failedAttempts=$failedAttempts, multiplierDuration=$multiplierDuration, maximumBackoffInterval=$maximumBackoffDuration..." }
-
-        var backoffDuration = multiplierDuration.multipliedBy(failedAttempts)
-        logger.trace { "Backoff duration for $failedAttempts*$multiplierDuration=$backoffDuration" }
-
-        backoffDuration = if (maximumBackoffDuration == null && backoffDuration > maximumBackoffDuration) {
-            logger.trace { "Shorted backoff duration $backoffDuration to $maximumBackoffDuration" }
-            maximumBackoffDuration
-        } else {
-            backoffDuration
-        }
-
-        logger.trace { "Got backoff duration for failedAttempts=$failedAttempts, multiplierDuration=$multiplierDuration, maximumBackoffInterval=$maximumBackoffDuration: $backoffDuration" }
-        return backoffDuration
-    }
+    ): Duration
 }
