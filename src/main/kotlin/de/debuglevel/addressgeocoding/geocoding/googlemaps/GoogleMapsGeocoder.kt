@@ -8,6 +8,10 @@ import javax.inject.Singleton
 @Singleton
 @Requires(property = "app.address-geocoding.geocoders.googlemaps.enabled", value = "true")
 class GoogleMapsGeocoder : Geocoder {
+    init {
+        TODO("Not yet implemented")
+    }
+
     override fun getCoordinates(address: String): Coordinate {
         TODO("Not yet implemented")
     }
