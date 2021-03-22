@@ -127,7 +127,8 @@ class GeocodeService(
             geocode.lastGeocodingOn,
             geocode.failedAttempts.toLong(),
             intervalMultiplicator,
-            maximumBackoffInterval
+            maximumBackoffInterval,
+            geocode.hashCode()
         )
         logger.trace { "Checked if geocode $geocode is backed off: $isBackedOff" }
         return isBackedOff
