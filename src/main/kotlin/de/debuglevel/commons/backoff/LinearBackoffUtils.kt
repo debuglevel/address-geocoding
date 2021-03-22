@@ -9,21 +9,21 @@ object LinearBackoffUtils {
 
     /**
      * Checks whether the backoff duration is reached.
-     * @param lastAttemptOn When the last attempt was made; null if never
-     * @param failedAttempts How many failed attempts were made so far
-     * @param multiplierDuration Which duration should be added for each failed attempt
-     * @param maximumBackoffDuration The maximum duration to backoff (to prevent very large backoff durations)
+     * @param lastAttemptOn When the last attempt was made; null if never.
+     * @param failedAttempts How many failed attempts were made so far.
+     * @param multiplierDuration Which duration should be added for each failed attempt.
+     * @param maximumBackoffDuration The maximum duration to backoff (to prevent very large backoff durations) or null to allow infinite backoff durations.
      */
     fun isBackedOff(
         lastAttemptOn: LocalDateTime?,
         failedAttempts: Long,
         multiplierDuration: Duration,
-        maximumBackoffDuration: Duration
+        maximumBackoffDuration: Duration? = null
     ): Boolean {
-        require(lastAttemptOn == null || lastAttemptOn < LocalDateTime.now()) { "Last attempt must not be in the future." }
+        require(lastAttemptOn == null || lastAttemptOn < LocalDateTime.now()) { "Last attempt must be in the past or null." }
         require(failedAttempts >= 0) { "Failed attempts must be non-negative." }
         require(!multiplierDuration.isNegative) { "Duration multiplier must be non-negative." }
-        require(!maximumBackoffDuration.isNegative) { "Maximum backoff duration must be non-negative." }
+        require(maximumBackoffDuration == null || !maximumBackoffDuration.isNegative) { "Maximum backoff duration must be non-negative or null." }
         logger.trace { "Checking if backed off..." }
 
         val isBackedOff = if (lastAttemptOn == null) {
@@ -44,9 +44,9 @@ object LinearBackoffUtils {
 
     /**
      * Gets the duration until the next attempt, based on the number of previous failed attempts.
-     * @param failedAttempts How many failed attempts were made so far
-     * @param multiplierDuration Which duration should be added for each failed attempt
-     * @param maximumBackoffDuration The maximum duration to backoff (to prevent very large backoff durations)
+     * @param failedAttempts How many failed attempts were made so far.
+     * @param multiplierDuration Which duration should be added for each failed attempt.
+     * @param maximumBackoffDuration The maximum duration to backoff (to prevent very large backoff durations) or null to allow infinite backoff durations.
      */
     fun getBackoffDuration(
         failedAttempts: Long,
@@ -54,8 +54,8 @@ object LinearBackoffUtils {
         maximumBackoffDuration: Duration? = null
     ): Duration {
         require(failedAttempts >= 0) { "Failed attempts must be non-negative." }
-        require(!multiplierDuration.isNegative) { "Interval multiplier must be non-negative." }
-        require(maximumBackoffDuration == null || !maximumBackoffDuration.isNegative) { "Maximum backoff duration must be non-negative." }
+        require(!multiplierDuration.isNegative) { "Duration multiplier must be non-negative." }
+        require(maximumBackoffDuration == null || !maximumBackoffDuration.isNegative) { "Maximum backoff duration must be non-negative or null." }
         logger.trace { "Getting backoff duration for failedAttempts=$failedAttempts, multiplierDuration=$multiplierDuration, maximumBackoffInterval=$maximumBackoffDuration..." }
 
         var backoffDuration = multiplierDuration.multipliedBy(failedAttempts)
