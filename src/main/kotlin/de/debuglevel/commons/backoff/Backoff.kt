@@ -22,7 +22,7 @@ abstract class Backoff {
     ): Boolean {
         require(lastAttemptOn == null || lastAttemptOn < LocalDateTime.now()) { "Last attempt must be in the past or null." }
         require(failedAttempts >= 0) { "Failed attempts must be non-negative." }
-        require(!multiplierDuration.isNegative) { "Duration multiplier must be non-negative." }
+        require(!multiplierDuration.isNegative) { "Multiplier duration must be non-negative." }
         require(maximumBackoffDuration == null || !maximumBackoffDuration.isNegative) { "Maximum backoff duration must be non-negative or null." }
         logger.trace { "Checking if backed off..." }
 
@@ -48,9 +48,37 @@ abstract class Backoff {
      * @param multiplierDuration Which duration should be added for each failed attempt.
      * @param maximumBackoffDuration The maximum duration to backoff (to prevent very large backoff durations) or null to allow infinite backoff durations.
      */
-    abstract fun getBackoffDuration(
+    fun getBackoffDuration(
         failedAttempts: Long,
         multiplierDuration: Duration,
-        maximumBackoffDuration: Duration? = null
+        maximumBackoffDuration: Duration?
+    ): Duration {
+        require(failedAttempts >= 0) { "Failed attempts must be non-negative." }
+        require(!multiplierDuration.isNegative) { "Multiplier duration must be non-negative." }
+        require(maximumBackoffDuration == null || !maximumBackoffDuration.isNegative) { "Maximum backoff duration must be non-negative or null." }
+        logger.trace { "Getting backoff duration for failedAttempts=$failedAttempts, multiplierDuration=$multiplierDuration, maximumBackoffInterval=$maximumBackoffDuration..." }
+
+        var backoffDuration = calculateBackoffDuration(failedAttempts, multiplierDuration)
+        logger.trace { "Backoff duration: $backoffDuration" }
+
+        backoffDuration = if (maximumBackoffDuration != null && backoffDuration > maximumBackoffDuration) {
+            logger.trace { "Shorted backoff duration $backoffDuration to $maximumBackoffDuration" }
+            maximumBackoffDuration
+        } else {
+            backoffDuration
+        }
+
+        logger.trace { "Got backoff duration for failedAttempts=$failedAttempts, multiplierDuration=$multiplierDuration, maximumBackoffInterval=$maximumBackoffDuration: $backoffDuration" }
+        return backoffDuration
+    }
+
+    /**
+     * Gets the duration until the next attempt, based on the number of previous failed attempts.
+     * @param failedAttempts How many failed attempts were made so far.
+     * @param multiplierDuration Which duration should be added for each failed attempt.
+     */
+    abstract fun calculateBackoffDuration(
+        failedAttempts: Long,
+        multiplierDuration: Duration,
     ): Duration
 }
