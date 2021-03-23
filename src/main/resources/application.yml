@@ -15,7 +15,7 @@ app:
       maximum-duration: 30d
     outdated:
       # duration after which a geocode is assumed to be outdated and should be requested again
-      interval: 90d
+      duration: 90d
     geocoders:
       googlemaps:
         enabled: false

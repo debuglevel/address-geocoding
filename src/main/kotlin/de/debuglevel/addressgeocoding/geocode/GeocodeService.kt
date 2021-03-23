@@ -18,7 +18,7 @@ import javax.inject.Singleton
 class GeocodeService(
     private val geocodeRepository: GeocodeRepository,
     private val geocoder: Geocoder,
-    @Property(name = "app.address-geocoding.outdated.interval") val outdatingInterval: Duration,
+    @Property(name = "app.address-geocoding.outdated.duration") val outdatingDuration: Duration,
     @Property(name = "app.address-geocoding.failed-geocode-reattempt.multiplier-duration") val multiplierDuration: Duration,
     @Property(name = "app.address-geocoding.failed-geocode-reattempt.maximum-duration") val maximumBackoffDuration: Duration,
 ) {
@@ -142,9 +142,9 @@ class GeocodeService(
     }
 
     private fun isOutdated(geocode: Geocode): Boolean {
-        logger.trace { "Checking if geocode $geocode is outdated (outdating-interval=$outdatingInterval)..." }
-        val outdated = OutdateUtils.isOutdated(geocode.lastGeocodingOn, outdatingInterval)
-        logger.trace { "Checked if geocode $geocode is outdated (outdating-interval=$outdatingInterval): $outdated" }
+        logger.trace { "Checking if geocode $geocode is outdated (outdating-interval=$outdatingDuration)..." }
+        val outdated = OutdateUtils.isOutdated(geocode.lastGeocodingOn, outdatingDuration)
+        logger.trace { "Checked if geocode $geocode is outdated (outdating-interval=$outdatingDuration): $outdated" }
         return outdated
     }
 
