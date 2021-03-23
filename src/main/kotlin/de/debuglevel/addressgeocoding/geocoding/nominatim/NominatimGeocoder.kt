@@ -43,8 +43,7 @@ class NominatimGeocoder(
      */
     private var lastRequestOn: LocalDateTime? = null
 
-    private val nominatimClient: JsonNominatimClient
-        get() = buildNominatimClient()
+    private val nominatimClient: JsonNominatimClient = buildNominatimClient()
 
     private fun buildNominatimClient(): JsonNominatimClient {
         logger.trace { "Building Nominatim client..." }
