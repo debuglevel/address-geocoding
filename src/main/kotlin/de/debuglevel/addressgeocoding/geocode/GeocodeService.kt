@@ -47,9 +47,9 @@ class GeocodeService(
 
         val savedGeocode = try {
             logger.debug { "Searching if geocode '$geocode' already exists..." }
-            val savedGeocode = geocodeRepository.find(geocode.address)
+            val foundGeocode = geocodeRepository.find(geocode.address)
             logger.debug { "Using already existing geocode '$geocode'..." }
-            savedGeocode
+            foundGeocode
         } catch (e: EmptyResultException) {
             logger.debug { "Saving not-already existing geocode '$geocode'..." }
             val savedGeocode = geocodeRepository.save(geocode)
