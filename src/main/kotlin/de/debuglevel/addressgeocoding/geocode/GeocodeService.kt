@@ -54,6 +54,7 @@ class GeocodeService(
             logger.debug { "Saving not-already existing geocode '$geocode'..." }
             val savedGeocode = geocodeRepository.save(geocode)
             enqueueGeocoding(savedGeocode)
+            enqueueGeocoding(savedGeocode)
             savedGeocode
         }
 
@@ -143,7 +144,7 @@ class GeocodeService(
     private fun enqueueGeocoding(geocode: Geocode) {
         logger.debug { "Enqueuing $geocode for geocoding..." }
 
-        if (!geocodingQueueMonitor.contains(geocode)) { // TODO check if this really works due to entity saving mechanisms
+        if (!geocodingQueueMonitor.contains(geocode)) {
             val future = geocodingExecutor.submit {
                 logger.debug { "Starting enqueued task for $geocode..." }
                 if (isBackedOff(geocode)) {
