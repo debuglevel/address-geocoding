@@ -19,8 +19,8 @@ class GeocodeService(
     private val geocodeRepository: GeocodeRepository,
     private val geocoder: Geocoder,
     @Property(name = "app.address-geocoding.outdated.interval") val outdatingInterval: Duration,
-    @Property(name = "app.address-geocoding.failed-geocode-reattempt.interval-multiplicator") val intervalMultiplicator: Duration,
-    @Property(name = "app.address-geocoding.failed-geocode-reattempt.maximum-interval") val maximumBackoffInterval: Duration,
+    @Property(name = "app.address-geocoding.failed-geocode-reattempt.multiplier-duration") val multiplierDuration: Duration,
+    @Property(name = "app.address-geocoding.failed-geocode-reattempt.maximum-duration") val maximumBackoffDuration: Duration,
 ) {
     private val logger = KotlinLogging.logger {}
 
@@ -126,8 +126,8 @@ class GeocodeService(
         val isBackedOff = LinearBackoff.isBackedOff(
             geocode.lastGeocodingOn,
             geocode.failedAttempts.toLong(),
-            intervalMultiplicator,
-            maximumBackoffInterval,
+            multiplierDuration,
+            maximumBackoffDuration,
             geocode.hashCode()
         )
         logger.trace { "Checked if geocode $geocode is backed off: $isBackedOff" }

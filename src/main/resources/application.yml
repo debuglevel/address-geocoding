@@ -10,9 +10,9 @@ app:
     failed-geocode-reattempt:
       # the count of failed attempts is multiplied with this interval.
       # after the third attempt, it is tried again after 3*1d=3days
-      interval-multiplicator: 1d
+      multiplier-duration: 1d
       # a new attempt is made at least after this duration, even if the calculation above would be greater.
-      maximum-interval: 30d
+      maximum-duration: 30d
     outdated:
       # duration after which a geocode is assumed to be outdated and should be requested again
       interval: 90d
