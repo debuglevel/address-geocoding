@@ -52,10 +52,10 @@ class GeocodeService(
             savedGeocode
         } catch (e: EmptyResultException) {
             logger.debug { "Saving not-already existing geocode '$geocode'..." }
-            geocodeRepository.save(geocode)
+            val savedGeocode = geocodeRepository.save(geocode)
+            enqueueGeocoding(savedGeocode)
+            savedGeocode
         }
-
-        enqueueGeocoding(savedGeocode)
 
         logger.debug { "Added geocode: $savedGeocode" }
         return savedGeocode
