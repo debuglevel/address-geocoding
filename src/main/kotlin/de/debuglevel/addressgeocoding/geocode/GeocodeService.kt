@@ -55,7 +55,7 @@ class GeocodeService(
             geocodeRepository.save(geocode)
         }
 
-        // TODO: should trigger an async geocode() call
+        enqueueGeocoding(savedGeocode)
 
         logger.debug { "Added geocode: $savedGeocode" }
         return savedGeocode
