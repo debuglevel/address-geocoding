@@ -1,5 +1,7 @@
 app:
   address-geocoding:
+    # maximum parallel geocoding executions (note that the Nominatim and Photon geocoders will effectively reduce this to 1 parallel request to their service)
+    maximum-threads: 5
     # missing geocodes (i.e. also newly submitted ones) are checked in a regular interval
     missing-geocode-update:
       # wait this duration after startup

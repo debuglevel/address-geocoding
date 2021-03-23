@@ -11,6 +11,8 @@ import mu.KotlinLogging
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
 import javax.inject.Singleton
 
 
@@ -21,8 +23,12 @@ class GeocodeService(
     @Property(name = "app.address-geocoding.outdated.duration") val outdatingDuration: Duration,
     @Property(name = "app.address-geocoding.failed-geocode-reattempt.multiplier-duration") val multiplierDuration: Duration,
     @Property(name = "app.address-geocoding.failed-geocode-reattempt.maximum-duration") val maximumBackoffDuration: Duration,
+    @Property(name = "app.address-geocoding.maximum-threads") private val threadCount: Int,
 ) {
     private val logger = KotlinLogging.logger {}
+
+    private val geocodingQueueMonitor = mutableMapOf<Geocode, Future<*>>()
+    private val geocodingExecutor = Executors.newFixedThreadPool(threadCount)
 
     fun get(id: UUID): Geocode {
         logger.debug { "Getting geocode with ID '$id'..." }
@@ -113,12 +119,43 @@ class GeocodeService(
     fun updateMissingGeocodes() {
         logger.debug { "Geocoding items with missing longitude and latitude..." }
 
+        cleanupQueueMonitor()
+
         // TODO: get only those with lon==null or/and lat==null from database
         // TODO:  that's not useful since isOutdated() is also checked
         geocodeRepository.findAll()
             .filter { isMissingData(it) || isOutdated(it) }
             .filter { isBackedOff(it) }
-            .forEach { geocode(it) }
+            .forEach { enqueueGeocoding(it) }
+    }
+
+    /**
+     * Removes all done geocoding tasks from queue monitor.
+     */
+    private fun cleanupQueueMonitor() {
+        logger.debug { "Cleaning up queue monitor (${geocodingQueueMonitor.count()} entries)..." }
+        geocodingQueueMonitor
+            .filter { it.value.isDone }
+            .forEach { geocodingQueueMonitor.remove(it.key) }
+        logger.debug { "Cleaned up queue monitor (${geocodingQueueMonitor.count()} entries)" }
+    }
+
+    private fun enqueueGeocoding(geocode: Geocode) {
+        logger.debug { "Enqueuing $geocode for geocoding..." }
+
+        if (!geocodingQueueMonitor.contains(geocode)) { // TODO check if this really works due to entity saving mechanisms
+            val future = geocodingExecutor.submit {
+                logger.debug { "Starting enqueued task for $geocode..." }
+                if (isBackedOff(geocode)) {
+                    geocode(geocode)
+                }
+                logger.debug { "Ended enqueued task for $geocode" }
+            }
+            logger.debug { "Enqueued $geocode for geocoding" }
+            geocodingQueueMonitor[geocode] = future
+        } else {
+            logger.debug { "Not enqueued $geocode as it was already on queue" }
+        }
     }
 
     private fun isBackedOff(geocode: Geocode): Boolean {

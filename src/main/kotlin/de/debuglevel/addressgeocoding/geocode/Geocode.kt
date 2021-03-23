@@ -43,4 +43,26 @@ data class Geocode(
      */
     @DateUpdated
     var lastModifiedOn: LocalDateTime = LocalDateTime.now(),
-)
+) {
+    override fun hashCode(): Int {
+        return id?.hashCode() ?: 0
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Geocode
+
+        if (id != other.id) return false
+        if (address != other.address) return false
+        if (longitude != other.longitude) return false
+        if (latitude != other.latitude) return false
+        if (lastGeocodingOn != other.lastGeocodingOn) return false
+        if (failedAttempts != other.failedAttempts) return false
+        if (createdOn != other.createdOn) return false
+        if (lastModifiedOn != other.lastModifiedOn) return false
+
+        return true
+    }
+}
