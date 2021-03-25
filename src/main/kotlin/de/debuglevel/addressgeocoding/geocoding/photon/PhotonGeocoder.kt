@@ -39,9 +39,9 @@ class PhotonGeocoder(
         logger.debug("Waiting for lock to call PhotonClient for address '$address'...")
         val resultset = singleRequestLock.withLock {
             waitForNextRequestAllowed()
+            setLastRequestDateTime()
 
             logger.debug("Calling PhotonClient for address '$address'...")
-            setLastRequestDateTime()
             val resultset = photonClient.geocode(address)
             logger.debug("Called PhotonClient for address '$address': ${resultset.features.size} results.")
             resultset
