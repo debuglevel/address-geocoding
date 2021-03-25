@@ -25,6 +25,10 @@ app:
         enabled: true
         # How long should be waited between two requests (in nanoseconds)
         wait-between-requests: 1_000_000_000
+        # Base URL for the Nominatim service to use
+        url: https://nominatim.openstreetmap.org/
+        # email address to include in requests according to the Nominatim usage policy (https://nominatim.org/release-docs/latest/api/Search/#other)
+        email: github.com/debuglevel/address-geocoding
       # photon might be faster, but also not a service not as reliable as nominatim
       photon:
         enabled: false

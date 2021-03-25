@@ -7,6 +7,7 @@ import de.debuglevel.addressgeocoding.geocoding.UnreachableServiceException
 import fr.dudie.nominatim.client.JsonNominatimClient
 import fr.dudie.nominatim.client.request.NominatimSearchRequest
 import fr.dudie.nominatim.model.Address
+import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
 import mu.KotlinLogging
 import org.apache.http.impl.client.HttpClientBuilder
@@ -21,6 +22,8 @@ import kotlin.concurrent.withLock
 @Singleton
 @Requires(property = "app.address-geocoding.geocoders.nominatim.enabled", value = "true")
 class NominatimGeocoder(
+    @Property(name = "app.address-geocoding.geocoders.nominatim.url") private val baseUrl: String,
+    @Property(name = "app.address-geocoding.geocoders.nominatim.email") private val email: String,
     private val nominatimProperties: NominatimProperties,
 ) : Geocoder {
     private val logger = KotlinLogging.logger {}
@@ -52,9 +55,6 @@ class NominatimGeocoder(
         logger.trace { "Building Nominatim client..." }
 
         val httpClient = HttpClientBuilder.create().build()
-
-        val baseUrl = "https://nominatim.openstreetmap.org/"
-        val email = "debuglevel.de"
         val jsonNominatimClient = JsonNominatimClient(baseUrl, httpClient, email)
 
         logger.trace { "Built Nominatim client" }
