@@ -12,8 +12,6 @@ import mu.KotlinLogging
 import org.apache.http.impl.client.HttpClientBuilder
 import java.io.IOException
 import java.net.UnknownHostException
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
@@ -22,7 +20,7 @@ import kotlin.concurrent.withLock
 @Requires(property = "app.address-geocoding.geocoders.nominatim.enabled", value = "true")
 class NominatimGeocoder(
     private val nominatimProperties: NominatimProperties,
-) : Geocoder {
+) : Geocoder(nominatimProperties) {
     private val logger = KotlinLogging.logger {}
 
     override fun getCoordinates(address: String): Coordinate {
@@ -41,11 +39,6 @@ class NominatimGeocoder(
 
     private val singleRequestLock = java.util.concurrent.locks.ReentrantLock()
 
-    /**
-     * When the last request to Nominatim was made
-     */
-    private var lastRequestOn: LocalDateTime? = null
-
     private val nominatimClient: JsonNominatimClient = buildNominatimClient()
 
     private fun buildNominatimClient(): JsonNominatimClient {
@@ -56,21 +49,6 @@ class NominatimGeocoder(
 
         logger.trace { "Built Nominatim client" }
         return jsonNominatimClient
-    }
-
-    /**
-     * Waits until the next request is permitted to be made.
-     */
-    private fun waitForNextRequestAllowed() {
-        val lastRequestOn = this.lastRequestOn
-        if (lastRequestOn != null) {
-            val nextRequestDateTime = lastRequestOn.plusNanos(nominatimProperties.waitBetweenRequests)
-            val waitingTimeMilliseconds = ChronoUnit.MILLIS.between(LocalDateTime.now(), nextRequestDateTime)
-            if (waitingTimeMilliseconds > 0) {
-                logger.debug { "Waiting ${waitingTimeMilliseconds}ms until the next request to Nominatim is allowed..." }
-                Thread.sleep(waitingTimeMilliseconds)
-            }
-        }
     }
 
     private fun getNominatimAddress(address: String): Address {
@@ -86,7 +64,7 @@ class NominatimGeocoder(
 
             val addresses = try {
                 logger.debug("Calling NominatimClient for address '$address'...")
-                this.lastRequestOn = LocalDateTime.now()
+                setLastRequestDateTime()
                 val addresses = nominatimClient.search(searchRequest)
                 logger.debug("Called NominatimClient for address '$address': ${addresses.size} results.")
                 addresses

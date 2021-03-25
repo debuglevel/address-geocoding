@@ -1,14 +1,10 @@
 package de.debuglevel.addressgeocoding.geocoding.nominatim
 
+import de.debuglevel.addressgeocoding.geocoding.GeocoderProperties
 import io.micronaut.context.annotation.ConfigurationProperties
 
 @ConfigurationProperties("app.address-geocoding.geocoders.nominatim")
-class NominatimProperties {
-    /**
-     * How long should be waited between two requests
-     */
-    var waitBetweenRequests: Long = 1_000_000_000
-
+class NominatimProperties : GeocoderProperties() {
     /**
      * Base URL for the Nominatim service to use
      */

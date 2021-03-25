@@ -32,6 +32,8 @@ app:
       # photon might be faster, but also not a service not as reliable as nominatim
       photon:
         enabled: false
+          # How long should be waited between two requests (in nanoseconds)
+          wait-between-requests: 0
   security:
     configurable-credential-authentication:
       username: "SECRET_USERNAME"

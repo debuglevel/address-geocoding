@@ -11,8 +11,9 @@ import kotlin.concurrent.withLock
 @Singleton
 @Requires(property = "app.address-geocoding.geocoders.photon.enabled", value = "true")
 class PhotonGeocoder(
+    private val photonProperties: PhotonProperties,
     private val photonClient: PhotonClient
-) : Geocoder {
+) : Geocoder(photonProperties) {
     private val logger = KotlinLogging.logger {}
 
     override fun getCoordinates(address: String): Coordinate {
@@ -37,7 +38,10 @@ class PhotonGeocoder(
         // Photon API should be used sequentially (i.e. with 1 concurrent connection).
         logger.debug("Waiting for lock to call PhotonClient for address '$address'...")
         val resultset = singleRequestLock.withLock {
+            waitForNextRequestAllowed()
+
             logger.debug("Calling PhotonClient for address '$address'...")
+            setLastRequestDateTime()
             val resultset = photonClient.geocode(address)
             logger.debug("Called PhotonClient for address '$address': ${resultset.features.size} results.")
             resultset
