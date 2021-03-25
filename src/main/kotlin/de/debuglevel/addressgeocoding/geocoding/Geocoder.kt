@@ -9,8 +9,14 @@ import java.time.temporal.ChronoUnit
 abstract class Geocoder(private val geocoderProperties: GeocoderProperties) {
     private val logger = KotlinLogging.logger {}
 
+    /**
+     * Get coordinates for an address, dependent on the actual implementation.
+     */
     abstract fun getCoordinatesImpl(address: String): Coordinate
 
+    /**
+     * Get coordinates for an address.
+     */
     fun getCoordinates(address: String): Coordinate {
         logger.debug { "Getting coordinates for address '$address'..." }
 
