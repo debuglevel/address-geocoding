@@ -16,7 +16,7 @@ class PhotonGeocoder(
 ) : Geocoder(photonProperties) {
     private val logger = KotlinLogging.logger {}
 
-    override fun getCoordinates(address: String): Coordinate {
+    override fun getCoordinatesImpl(address: String): Coordinate {
         logger.debug { "Getting coordinates for address '$address'..." }
 
         val feature = getPhotonFeature(address)

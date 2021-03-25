@@ -3,15 +3,12 @@ package de.debuglevel.addressgeocoding.geocoding.nominatim
 import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Coordinate
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
-import de.debuglevel.addressgeocoding.geocoding.UnreachableServiceException
 import fr.dudie.nominatim.client.JsonNominatimClient
 import fr.dudie.nominatim.client.request.NominatimSearchRequest
 import fr.dudie.nominatim.model.Address
 import io.micronaut.context.annotation.Requires
 import mu.KotlinLogging
 import org.apache.http.impl.client.HttpClientBuilder
-import java.io.IOException
-import java.net.UnknownHostException
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
@@ -23,7 +20,7 @@ class NominatimGeocoder(
 ) : Geocoder(nominatimProperties) {
     private val logger = KotlinLogging.logger {}
 
-    override fun getCoordinates(address: String): Coordinate {
+    override fun getCoordinatesImpl(address: String): Coordinate {
         logger.debug { "Getting coordinates for address '$address'..." }
 
         val result = getNominatimAddress(address)
@@ -60,19 +57,11 @@ class NominatimGeocoder(
             waitForNextRequestAllowed()
             setLastRequestDateTime()
 
-            val addresses = try {
-                logger.debug("Calling NominatimClient for address '$address'...")
-                val searchRequest = NominatimSearchRequest()
-                searchRequest.setQuery(address)
-                val addresses = nominatimClient.search(searchRequest)
-                logger.debug("Called NominatimClient for address '$address': ${addresses.size} results.")
-                addresses
-            } catch (e: UnknownHostException) {
-                throw UnreachableServiceException(e)
-            } catch (e: IOException) {
-                throw UnreachableServiceException(e)
-            }
-
+            logger.debug("Calling NominatimClient for address '$address'...")
+            val searchRequest = NominatimSearchRequest()
+            searchRequest.setQuery(address)
+            val addresses = nominatimClient.search(searchRequest)
+            logger.debug("Called NominatimClient for address '$address': ${addresses.size} results.")
             addresses
         }
 
