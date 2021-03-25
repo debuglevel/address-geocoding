@@ -54,7 +54,7 @@ abstract class Geocoder(
             statistics.unreachable += 1
             throw UnreachableServiceException(e)
         } catch (e: AddressNotFoundException) {
-            statistics.success += 1
+            statistics.unknownAddress += 1
             throw e
         }
 
