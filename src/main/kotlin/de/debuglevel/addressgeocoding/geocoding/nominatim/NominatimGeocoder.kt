@@ -84,9 +84,9 @@ class NominatimGeocoder(
         val addresses = singleRequestLock.withLock {
             waitForNextRequestAllowed()
             logger.debug("Calling NominatimClient for address '$address'...")
+            this.lastRequestOn = LocalDateTime.now()
             val addresses = nominatimClient.search(searchRequest)
             logger.debug("Called NominatimClient for address '$address': ${addresses.size} results.")
-            this.lastRequestOn = LocalDateTime.now()
             addresses
         }
 
