@@ -13,26 +13,17 @@ abstract class Geocoder(private val geocoderProperties: GeocoderProperties) {
     /**
      * Lock object for implementation that only allow 1 parallel request.
      */
-    protected val singleRequestLock = java.util.concurrent.locks.ReentrantLock()
+    private val singleRequestLock = java.util.concurrent.locks.ReentrantLock()
+
+    /**
+     * When the last request to the service was made
+     */
+    private var lastRequestOn: LocalDateTime? = null
 
     /**
      * Get coordinates for an address, dependent on the actual implementation.
      */
     abstract fun getCoordinatesImpl(address: String): Coordinate
-
-    /**
-     * Waits until the next request is allowed and then executes the given [action] under this lock.
-     * @return the return value of the action.
-     */
-    fun <T> withDelayedLock(action: () -> T): T {
-        waitForNextRequestAllowed()
-        setLastRequestDateTime()
-
-        logger.debug("Waiting for lock...")
-        singleRequestLock.withLock {
-            return action()
-        }
-    }
 
     /**
      * Get coordinates for an address.
@@ -53,14 +44,9 @@ abstract class Geocoder(private val geocoderProperties: GeocoderProperties) {
     }
 
     /**
-     * When the last request to the service was made
-     */
-    private var lastRequestOn: LocalDateTime? = null
-
-    /**
      * Waits until the next request is permitted to be made.
      */
-    fun waitForNextRequestAllowed() {
+    private fun waitForNextRequestAllowed() {
         val lastRequestOn = this.lastRequestOn
         if (lastRequestOn != null) {
             val nextRequestDateTime = lastRequestOn.plusNanos(geocoderProperties.waitBetweenRequests)
@@ -75,7 +61,21 @@ abstract class Geocoder(private val geocoderProperties: GeocoderProperties) {
     /**
      * Set the last request DateTime to now()
      */
-    fun setLastRequestDateTime() {
+    private fun setLastRequestDateTime() {
         this.lastRequestOn = LocalDateTime.now()
+    }
+
+    /**
+     * Waits until the next request is allowed and then executes the given [action] under this lock.
+     * @return the return value of the action.
+     */
+    fun <T> withDelayedLock(action: () -> T): T {
+        waitForNextRequestAllowed()
+        setLastRequestDateTime()
+
+        logger.debug("Waiting for lock...")
+        singleRequestLock.withLock {
+            return action()
+        }
     }
 }

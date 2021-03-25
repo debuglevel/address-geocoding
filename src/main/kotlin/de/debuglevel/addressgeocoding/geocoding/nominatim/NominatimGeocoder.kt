@@ -19,6 +19,8 @@ class NominatimGeocoder(
 ) : Geocoder(nominatimProperties) {
     private val logger = KotlinLogging.logger {}
 
+    private val nominatimClient: JsonNominatimClient = buildNominatimClient()
+
     override fun getCoordinatesImpl(address: String): Coordinate {
         logger.debug { "Getting coordinates for address '$address'..." }
 
@@ -32,8 +34,6 @@ class NominatimGeocoder(
         logger.debug { "Got coordinates for address '$address': $location" }
         return location
     }
-
-    private val nominatimClient: JsonNominatimClient = buildNominatimClient()
 
     private fun buildNominatimClient(): JsonNominatimClient {
         logger.trace { "Building Nominatim client..." }
