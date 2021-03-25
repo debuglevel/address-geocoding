@@ -6,6 +6,7 @@ import java.util.*
 data class GetGeocodeResponse(
     val id: UUID,
     val address: String,
+    val status: Status,
     val longitude: Double?,
     val latitude: Double?,
     val lastGeocodingOn: LocalDateTime?,
@@ -16,6 +17,7 @@ data class GetGeocodeResponse(
     constructor(geocode: Geocode) : this(
         geocode.id!!,
         geocode.address,
+        geocode.status,
         geocode.longitude,
         geocode.latitude,
         geocode.lastGeocodingOn,
