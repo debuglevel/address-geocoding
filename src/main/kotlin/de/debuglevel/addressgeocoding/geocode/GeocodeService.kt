@@ -2,6 +2,7 @@ package de.debuglevel.addressgeocoding.geocode
 
 import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
+import de.debuglevel.addressgeocoding.geocoding.Statistics
 import de.debuglevel.addressgeocoding.geocoding.UnreachableServiceException
 import de.debuglevel.commons.backoff.LinearBackoff
 import de.debuglevel.commons.outdate.OutdateUtils
@@ -114,6 +115,15 @@ class GeocodeService(
         val countDeleted = countBefore - countAfter
 
         logger.debug { "Deleted $countDeleted of $countBefore geocodes, $countAfter remaining" }
+    }
+
+    fun getStatistics(): Statistics {
+        logger.debug { "Getting statistics..." }
+
+        val statistics = geocoder.statistics
+
+        logger.debug { "Got statistics: $statistics" }
+        return statistics
     }
 
     @ExperimentalTime
