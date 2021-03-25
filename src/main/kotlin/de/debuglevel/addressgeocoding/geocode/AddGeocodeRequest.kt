@@ -10,6 +10,7 @@ data class AddGeocodeRequest(
     fun toGeocode(): Geocode {
         return Geocode(
             id = null,
+            status = Status.Pending,
             address = this.address,
             longitude = null,
             latitude = null

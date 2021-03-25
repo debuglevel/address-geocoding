@@ -4,9 +4,7 @@ import io.micronaut.data.annotation.DateCreated
 import io.micronaut.data.annotation.DateUpdated
 import java.time.LocalDateTime
 import java.util.*
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity
 data class Geocode(
@@ -17,6 +15,11 @@ data class Geocode(
      * Address which should be geocoded
      */
     var address: String,
+    /**
+     * Geocoding status
+     */
+    @Enumerated(EnumType.STRING)
+    var status: Status,
     /**
      * Longitude, if geocoding was successful; null if failed or not yet attempted.
      */

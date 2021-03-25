@@ -2,6 +2,7 @@ package de.debuglevel.addressgeocoding.geocode
 
 import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
+import de.debuglevel.addressgeocoding.geocoding.UnreachableServiceException
 import de.debuglevel.commons.backoff.LinearBackoff
 import de.debuglevel.commons.outdate.OutdateUtils
 import io.micronaut.context.annotation.Property
@@ -67,6 +68,7 @@ class GeocodeService(
         // an object must be known to Hibernate (i.e. retrieved first) to get updated;
         // it would be a "detached entity" otherwise.
         val updateGeocode = this.get(id).apply {
+            status = geocode.status
             address = geocode.address
             longitude = geocode.longitude
             latitude = geocode.latitude
@@ -195,6 +197,7 @@ class GeocodeService(
             geocode.apply {
                 latitude = coordinates.latitude
                 longitude = coordinates.longitude
+                status = Status.Succeeded
                 failedAttempts = 0
             }
 
@@ -205,6 +208,25 @@ class GeocodeService(
             logger.debug { "Geocoding $geocode failed as address is unknown to geocoder" }
 
             geocode.apply {
+                status = Status.AddressNotFound
+                failedAttempts += 1
+            }
+
+            update(geocode.id!!, geocode)
+        } catch (e: UnreachableServiceException) {
+            logger.warn(e) { "Geocoding $geocode failed as backend could not be reached" }
+
+            geocode.apply {
+                status = Status.FailedDueToUnreachableService
+                failedAttempts += 1
+            }
+
+            update(geocode.id!!, geocode)
+        } catch (e: Exception) {
+            logger.warn(e) { "Geocoding $geocode failed with unknown exception" }
+
+            geocode.apply {
+                status = Status.FailedDueToUnexpectedError
                 failedAttempts += 1
             }
 
