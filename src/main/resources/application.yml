@@ -58,8 +58,8 @@ micronaut:
     enabled: false # default: false
   http:
     services: # manual service discovery
-      photon: # service ID
-        urls: # environment variable list would be MICRONAUT_HTTP_SERVICES_FOO_URLS=http://prod1,http://prod2
+      photon:
+        urls:
           - https://photon.komoot.io
 
 logger:
