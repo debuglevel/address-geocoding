@@ -46,6 +46,9 @@ abstract class Geocoder(private val geocoderProperties: GeocoderProperties) {
         }
     }
 
+    /**
+     * Set the last request DateTime to now()
+     */
     fun setLastRequestDateTime() {
         this.lastRequestOn = LocalDateTime.now()
     }
