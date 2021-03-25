@@ -54,7 +54,6 @@ class GeocodeService(
             logger.debug { "Saving not-already existing geocode '$geocode'..." }
             val savedGeocode = geocodeRepository.save(geocode)
             enqueueGeocoding(savedGeocode)
-            enqueueGeocoding(savedGeocode)
             savedGeocode
         }
 
