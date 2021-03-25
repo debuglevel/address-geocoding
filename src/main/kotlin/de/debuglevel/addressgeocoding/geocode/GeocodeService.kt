@@ -15,6 +15,7 @@ import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import javax.inject.Singleton
+import kotlin.time.ExperimentalTime
 
 
 @Singleton
@@ -43,6 +44,7 @@ class GeocodeService(
         return geocode
     }
 
+    @ExperimentalTime
     fun add(geocode: Geocode): Geocode {
         logger.debug { "Adding geocode '$geocode'..." }
 
@@ -114,6 +116,7 @@ class GeocodeService(
         logger.debug { "Deleted $countDeleted of $countBefore geocodes, $countAfter remaining" }
     }
 
+    @ExperimentalTime
     @Scheduled(
         fixedDelay = "\${app.address-geocoding.missing-geocode-update.interval:60s}",
         initialDelay = "\${app.address-geocoding.missing-geocode-update.initial-delay:60s}"
@@ -142,6 +145,7 @@ class GeocodeService(
         logger.debug { "Cleaned up queue monitor (${geocodingQueueMonitor.count()} entries)" }
     }
 
+    @ExperimentalTime
     private fun enqueueGeocoding(geocode: Geocode) {
         logger.debug { "Enqueuing $geocode for geocoding..." }
 
@@ -187,6 +191,7 @@ class GeocodeService(
         return outdated
     }
 
+    @ExperimentalTime
     fun geocode(geocode: Geocode) {
         logger.debug { "Geocoding $geocode..." }
 

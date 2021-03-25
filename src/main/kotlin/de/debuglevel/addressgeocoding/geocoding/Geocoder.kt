@@ -6,9 +6,16 @@ import java.net.UnknownHostException
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.concurrent.withLock
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
-abstract class Geocoder(private val geocoderProperties: GeocoderProperties) {
+abstract class Geocoder(
+    private val geocoderProperties: GeocoderProperties,
+) {
     private val logger = KotlinLogging.logger {}
+
+    val statistics = Statistics()
 
     /**
      * Lock object for implementation that only allow 1 parallel request.
@@ -28,19 +35,51 @@ abstract class Geocoder(private val geocoderProperties: GeocoderProperties) {
     /**
      * Get coordinates for an address.
      */
+    @ExperimentalTime
     fun getCoordinates(address: String): Coordinate {
         logger.debug { "Getting coordinates for address '$address'..." }
 
         val coordinate = try {
-            getCoordinatesImpl(address)
+            val timedValue = measureTimedValue {
+                getCoordinatesImpl(address)
+            }
+            val coordinate = timedValue.value
+            calculateAverageRequestDuration(timedValue.duration)
+            statistics.success += 1
+            coordinate
         } catch (e: UnknownHostException) {
+            statistics.unreachable += 1
             throw UnreachableServiceException(e)
         } catch (e: IOException) {
+            statistics.unreachable += 1
             throw UnreachableServiceException(e)
+        } catch (e: AddressNotFoundException) {
+            statistics.success += 1
+            throw e
         }
 
         logger.debug { "Got coordinates for address '$address': $coordinate" }
         return coordinate
+    }
+
+    /**
+     * Calculates the new average duration based on this new duration.
+     * Must be called before incrementing the request counter for correct calculation.
+     */
+    @ExperimentalTime
+    private fun calculateAverageRequestDuration(duration: Duration) {
+        logger.trace { "Calculating new average request duration..." }
+
+        val averageDuration = statistics.averageRequestDuration
+        statistics.averageRequestDuration = if (averageDuration == null) {
+            duration.inSeconds
+        } else {
+            val durationSum = averageDuration * statistics.success
+            val newAverageDuration = (durationSum + duration.inSeconds) / (statistics.success + 1)
+            newAverageDuration
+        }
+
+        logger.trace { "Calculated new average request duration: ${statistics.averageRequestDuration}" }
     }
 
     /**
