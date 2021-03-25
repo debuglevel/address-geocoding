@@ -10,7 +10,6 @@ import io.micronaut.context.annotation.Requires
 import mu.KotlinLogging
 import org.apache.http.impl.client.HttpClientBuilder
 import javax.inject.Singleton
-import kotlin.concurrent.withLock
 
 
 @Singleton
@@ -34,8 +33,6 @@ class NominatimGeocoder(
         return location
     }
 
-    private val singleRequestLock = java.util.concurrent.locks.ReentrantLock()
-
     private val nominatimClient: JsonNominatimClient = buildNominatimClient()
 
     private fun buildNominatimClient(): JsonNominatimClient {
@@ -51,12 +48,8 @@ class NominatimGeocoder(
     private fun getNominatimAddress(address: String): Address {
         logger.debug("Searching address '$address'...")
 
-        // OpenStreetMaps Nominatim API allows only 1 concurrent connection. Ensure this with a lock.
-        logger.debug("Waiting for lock to call NominatimClient for address '$address'...")
-        val addresses = singleRequestLock.withLock {
-            waitForNextRequestAllowed()
-            setLastRequestDateTime()
-
+        // OpenStreetMaps Nominatim API allows only 1 parallel connection. Ensure this with a lock.
+        val addresses = withDelayedLock {
             logger.debug("Calling NominatimClient for address '$address'...")
             val searchRequest = NominatimSearchRequest()
             searchRequest.setQuery(address)

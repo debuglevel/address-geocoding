@@ -6,7 +6,6 @@ import de.debuglevel.addressgeocoding.geocoding.Geocoder
 import io.micronaut.context.annotation.Requires
 import mu.KotlinLogging
 import javax.inject.Singleton
-import kotlin.concurrent.withLock
 
 @Singleton
 @Requires(property = "app.address-geocoding.geocoders.photon.enabled", value = "true")
@@ -30,17 +29,11 @@ class PhotonGeocoder(
         return coordinate
     }
 
-    private val singleRequestLock = java.util.concurrent.locks.ReentrantLock()
-
     private fun getPhotonFeature(address: String): Feature {
         logger.debug("Searching address '$address'...")
 
         // Photon API should be used sequentially (i.e. with 1 concurrent connection).
-        logger.debug("Waiting for lock to call PhotonClient for address '$address'...")
-        val resultset = singleRequestLock.withLock {
-            waitForNextRequestAllowed()
-            setLastRequestDateTime()
-
+        val resultset = withDelayedLock {
             logger.debug("Calling PhotonClient for address '$address'...")
             val resultset = photonClient.geocode(address)
             logger.debug("Called PhotonClient for address '$address': ${resultset.features.size} results.")

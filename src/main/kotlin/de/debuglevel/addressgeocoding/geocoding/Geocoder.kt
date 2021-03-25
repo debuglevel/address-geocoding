@@ -5,14 +5,34 @@ import java.io.IOException
 import java.net.UnknownHostException
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import kotlin.concurrent.withLock
 
 abstract class Geocoder(private val geocoderProperties: GeocoderProperties) {
     private val logger = KotlinLogging.logger {}
 
     /**
+     * Lock object for implementation that only allow 1 parallel request.
+     */
+    protected val singleRequestLock = java.util.concurrent.locks.ReentrantLock()
+
+    /**
      * Get coordinates for an address, dependent on the actual implementation.
      */
     abstract fun getCoordinatesImpl(address: String): Coordinate
+
+    /**
+     * Waits until the next request is allowed and then executes the given [action] under this lock.
+     * @return the return value of the action.
+     */
+    fun <T> withDelayedLock(action: () -> T): T {
+        waitForNextRequestAllowed()
+        setLastRequestDateTime()
+
+        logger.debug("Waiting for lock...")
+        singleRequestLock.withLock {
+            return action()
+        }
+    }
 
     /**
      * Get coordinates for an address.
