@@ -6,11 +6,9 @@ import de.debuglevel.addressgeocoding.geocoding.Statistics
 import de.debuglevel.addressgeocoding.geocoding.UnreachableServiceException
 import de.debuglevel.commons.backoff.LinearBackoff
 import de.debuglevel.commons.outdate.OutdateUtils
-import io.micronaut.context.annotation.Property
 import io.micronaut.data.exceptions.EmptyResultException
 import io.micronaut.scheduling.annotation.Scheduled
 import mu.KotlinLogging
-import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.Executors
@@ -23,15 +21,14 @@ import kotlin.time.ExperimentalTime
 class GeocodeService(
     private val geocodeRepository: GeocodeRepository,
     private val geocoder: Geocoder,
-    @Property(name = "app.address-geocoding.outdated.duration") val outdatingDuration: Duration,
-    @Property(name = "app.address-geocoding.failed-geocode-reattempt.multiplier-duration") val multiplierDuration: Duration,
-    @Property(name = "app.address-geocoding.failed-geocode-reattempt.maximum-duration") val maximumBackoffDuration: Duration,
-    @Property(name = "app.address-geocoding.maximum-threads") private val threadCount: Int,
+    private val serviceProperties: ServiceProperties,
+    private val outdatingProperties: OutdatingProperties,
+    private val failureBackoffProperties: FailureBackoffProperties,
 ) {
     private val logger = KotlinLogging.logger {}
 
     private val geocodingQueueMonitor = mutableMapOf<Geocode, Future<*>>()
-    private val geocodingExecutor = Executors.newFixedThreadPool(threadCount)
+    private val geocodingExecutor = Executors.newFixedThreadPool(serviceProperties.maximumThreads)
 
     fun get(id: UUID): Geocode {
         logger.debug { "Getting geocode with ID '$id'..." }
@@ -128,8 +125,8 @@ class GeocodeService(
 
     @ExperimentalTime
     @Scheduled(
-        fixedDelay = "\${app.address-geocoding.missing-geocode-update.interval:60s}",
-        initialDelay = "\${app.address-geocoding.missing-geocode-update.initial-delay:60s}"
+        fixedDelay = "\${app.address-geocoding.scheduler.interval:60s}",
+        initialDelay = "\${app.address-geocoding.scheduler.initial-delay:60s}"
     )
     fun updateMissingGeocodes() {
         logger.debug { "Geocoding items with missing longitude and latitude..." }
@@ -179,8 +176,8 @@ class GeocodeService(
         val isBackedOff = LinearBackoff.isBackedOff(
             geocode.lastGeocodingOn,
             geocode.failedAttempts.toLong(),
-            multiplierDuration,
-            maximumBackoffDuration,
+            failureBackoffProperties.multiplierDuration,
+            failureBackoffProperties.maximumDuration,
             geocode.hashCode()
         )
         logger.trace { "Checked if geocode $geocode is backed off: $isBackedOff" }
@@ -195,9 +192,9 @@ class GeocodeService(
     }
 
     private fun isOutdated(geocode: Geocode): Boolean {
-        logger.trace { "Checking if geocode $geocode is outdated (outdating-interval=$outdatingDuration)..." }
-        val outdated = OutdateUtils.isOutdated(geocode.lastGeocodingOn, outdatingDuration)
-        logger.trace { "Checked if geocode $geocode is outdated (outdating-interval=$outdatingDuration): $outdated" }
+        logger.trace { "Checking if geocode $geocode is outdated (outdating-interval=${outdatingProperties.duration})..." }
+        val outdated = OutdateUtils.isOutdated(geocode.lastGeocodingOn, outdatingProperties.duration)
+        logger.trace { "Checked if geocode $geocode is outdated (outdating-interval=${outdatingProperties.duration}): $outdated" }
         return outdated
     }
 

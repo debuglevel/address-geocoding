@@ -1,36 +1,39 @@
 app:
   address-geocoding:
-    # maximum parallel geocoding executions (note that the Nominatim and Photon geocoders will effectively reduce this to 1 parallel request to their service)
-    maximum-threads: 5
-    # missing geocodes (i.e. also newly submitted ones) are checked in a regular interval
-    missing-geocode-update:
-      # wait this duration after startup
+    service:
+      # Maximum parallel geocoding executions.
+      # Note that the Nominatim and Photon geocoders will effectively reduce this to 1 parallel request to their service.
+      maximum-threads: 5
+    # Data pending to geocode (missing, failure or outdated data) are processed within a scheduler.
+    scheduler:
+      # Wait this duration after startup to start the scheduler the first time.
       initial-delay: 60s
-      # wait this duration between checks
+      # Wait this duration after last schedule termination to process again.
       interval: 60s
-    # after failed attempts, geocoding is reattempted after a duration
-    failed-geocode-reattempt:
-      # the count of failed attempts is multiplied with this interval.
-      # after the third attempt, it is tried again after 3*1d=3days
+    # Failed attempts to geocoding are retried again after a backoff duration.
+    failure-backoff:
+      # The count of failed attempts is multiplied with this duration.
+      # After the third attempt, the next try is after 3 * 1day = 3days
       multiplier-duration: 1d
-      # a new attempt is made at least after this duration, even if the calculation above would be greater.
+      # A new attempt is made at least after this duration, even if the regular backoff duration calculation would be greater.
       maximum-duration: 30d
-    outdated:
-      # duration after which a geocode is assumed to be outdated and should be requested again
+    # Geocodes can be marked as outdated after a duration to update their data.
+    outdating:
+      # duration after which a geocode is assumed to be outdated and should be requested again.
       duration: 90d
     geocoders:
-      googlemaps:
-        enabled: false
       nominatim:
+        # Whether the Geocoder is enabled
         enabled: true
         # How long should be waited between two requests (in nanoseconds)
         wait-between-requests: 1_000_000_000
         # Base URL for the Nominatim service to use
         url: https://nominatim.openstreetmap.org/
-        # email address to include in requests according to the Nominatim usage policy (https://nominatim.org/release-docs/latest/api/Search/#other)
+        # Email address to include in requests according to the Nominatim usage policy (https://nominatim.org/release-docs/latest/api/Search/#other)
         email: github.com/debuglevel/address-geocoding
       # photon might be faster, but also not a service not as reliable as nominatim
       photon:
+        # Whether the Geocoder is enabled
         enabled: false
         # How long should be waited between two requests (in nanoseconds)
         wait-between-requests: 0

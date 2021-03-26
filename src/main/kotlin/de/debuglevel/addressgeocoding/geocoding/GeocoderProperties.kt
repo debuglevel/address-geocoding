@@ -7,7 +7,7 @@ open class GeocoderProperties {
     var enabled: Boolean = false
 
     /**
-     * How long should be waited between two requests
+     * How long should be waited between two requests (in nanoseconds)
      */
     var waitBetweenRequests: Long = 1_000_000_000
 }
