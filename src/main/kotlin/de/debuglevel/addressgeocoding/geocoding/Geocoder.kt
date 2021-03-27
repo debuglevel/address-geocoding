@@ -5,7 +5,7 @@ import java.io.IOException
 import java.net.UnknownHostException
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import kotlin.concurrent.withLock
+import java.util.concurrent.Executors
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
@@ -18,9 +18,9 @@ abstract class Geocoder(
     val statistics = Statistics()
 
     /**
-     * Lock object for implementation that only allow 1 parallel request.
+     * Executor to manage parallel (or serial, with 1 thread) requests.
      */
-    private val singleRequestLock = java.util.concurrent.locks.ReentrantLock()
+    private val executor = Executors.newFixedThreadPool(geocoderProperties.maximumThreads)
 
     /**
      * When the last request to the service was made
@@ -105,16 +105,20 @@ abstract class Geocoder(
     }
 
     /**
-     * Waits until the next request is allowed and then executes the given [action] under this lock.
+     * Waits until the next request is allowed and then executes the given [action] in this executor.
      * @return the return value of the action.
      */
-    fun <T> withDelayedLock(action: () -> T): T {
+    fun <T> withDelayedExecution(action: () -> T): T {
         waitForNextRequestAllowed()
         setLastRequestDateTime()
 
-        logger.debug("Waiting for lock...")
-        singleRequestLock.withLock {
-            return action()
+        logger.debug("Submitting task to executor...")
+        val future = executor.submit<T> {
+            return@submit action()
         }
+        logger.debug("Waiting task to finish...")
+        val value = future.get()
+        logger.debug("Got task result")
+        return value
     }
 }

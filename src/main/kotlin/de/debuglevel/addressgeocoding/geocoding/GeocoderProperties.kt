@@ -7,6 +7,11 @@ open class GeocoderProperties {
     var enabled: Boolean = false
 
     /**
+     * Maximum parallel geocoding requests.
+     */
+    var maximumThreads: Int = 1
+
+    /**
      * How long should be waited between two requests (in nanoseconds)
      */
     var waitBetweenRequests: Long = 1_000_000_000

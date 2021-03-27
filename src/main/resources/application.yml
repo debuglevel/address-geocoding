@@ -25,7 +25,11 @@ app:
       nominatim:
         # Whether the Geocoder is enabled
         enabled: true
-        # How long should be waited between two requests (in nanoseconds)
+        # Maximum parallel geocoding requests.
+        # If using https://nominatim.openstreetmap.org this must be set to 1 according to their Usage Policy.
+        maximum-threads: 1
+        # How long should be waited between two requests (in nanoseconds).
+        # This should be 0 if maximum-threads is greater than 1.
         wait-between-requests: 1_000_000_000
         # Base URL for the Nominatim service to use
         url: https://nominatim.openstreetmap.org/
@@ -35,7 +39,11 @@ app:
       photon:
         # Whether the Geocoder is enabled
         enabled: false
+        # Maximum parallel geocoding requests.
+        # If using https://photon.komoot.io this must be set to 1 according to their Usage Policy.
+        maximum-threads: 1
         # How long should be waited between two requests (in nanoseconds)
+        # This should be 0 if maximum-threads is greater than 1.
         wait-between-requests: 0
   security:
     configurable-credential-authentication:
