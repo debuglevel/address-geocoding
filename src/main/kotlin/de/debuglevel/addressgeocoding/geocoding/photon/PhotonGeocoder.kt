@@ -6,6 +6,7 @@ import de.debuglevel.addressgeocoding.geocoding.Geocoder
 import io.micronaut.context.annotation.Requires
 import mu.KotlinLogging
 import javax.inject.Singleton
+import kotlin.time.ExperimentalTime
 
 @Singleton
 @Requires(property = "app.address-geocoding.geocoders.photon.enabled", value = "true")
@@ -15,6 +16,7 @@ class PhotonGeocoder(
 ) : Geocoder(photonProperties) {
     private val logger = KotlinLogging.logger {}
 
+    @ExperimentalTime
     override fun getCoordinatesImpl(address: String): Coordinate {
         logger.debug { "Getting coordinates for address '$address'..." }
 
@@ -29,13 +31,16 @@ class PhotonGeocoder(
         return coordinate
     }
 
+    @ExperimentalTime
     private fun getPhotonFeature(address: String): Feature {
         logger.debug("Searching address '$address'...")
 
         // Photon API should be used sequentially (i.e. with 1 concurrent connection).
         val resultset = withDelayedExecution {
             logger.debug("Calling PhotonClient for address '$address'...")
-            val resultset = photonClient.geocode(address)
+            val resultset = withRecordedDuration {
+                photonClient.geocode(address)
+            }
             logger.debug("Called PhotonClient for address '$address': ${resultset.features.size} results.")
             resultset
         }

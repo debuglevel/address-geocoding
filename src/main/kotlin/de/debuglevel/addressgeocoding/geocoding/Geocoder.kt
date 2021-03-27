@@ -40,11 +40,7 @@ abstract class Geocoder(
         logger.debug { "Getting coordinates for address '$address'..." }
 
         val coordinate = try {
-            val timedValue = measureTimedValue {
-                getCoordinatesImpl(address)
-            }
-            val coordinate = timedValue.value
-            calculateAverageRequestDuration(timedValue.duration)
+            val coordinate = getCoordinatesImpl(address)
             statistics.success += 1
             coordinate
         } catch (e: UnknownHostException) {
@@ -74,8 +70,9 @@ abstract class Geocoder(
         statistics.averageRequestDuration = if (averageDuration == null) {
             duration.inSeconds
         } else {
-            val durationSum = averageDuration * statistics.success
-            val newAverageDuration = (durationSum + duration.inSeconds) / (statistics.success + 1)
+            val calls = statistics.success + statistics.unknownAddress + statistics.unreachable
+            val durationSum = averageDuration * calls
+            val newAverageDuration = (durationSum + duration.inSeconds) / (calls + 1)
             newAverageDuration
         }
 
@@ -102,6 +99,23 @@ abstract class Geocoder(
      */
     private fun setLastRequestDateTime() {
         this.lastRequestOn = LocalDateTime.now()
+    }
+
+    /**
+     * Records the duration of the execution and
+     * @return the return value of the action.
+     */
+    @ExperimentalTime
+    fun <T> withRecordedDuration(action: () -> T): T {
+        logger.trace { "Recording duration for action..." }
+
+        val timedValue = measureTimedValue {
+            action()
+        }
+        calculateAverageRequestDuration(timedValue.duration)
+
+        logger.trace { "Recorded duration for action: ${timedValue.duration}" }
+        return timedValue.value
     }
 
     /**

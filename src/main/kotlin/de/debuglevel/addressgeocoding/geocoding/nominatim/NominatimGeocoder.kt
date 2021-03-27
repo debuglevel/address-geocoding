@@ -10,6 +10,7 @@ import io.micronaut.context.annotation.Requires
 import mu.KotlinLogging
 import org.apache.http.impl.client.HttpClientBuilder
 import javax.inject.Singleton
+import kotlin.time.ExperimentalTime
 
 
 @Singleton
@@ -21,6 +22,7 @@ class NominatimGeocoder(
 
     private val nominatimClient: JsonNominatimClient = buildNominatimClient()
 
+    @ExperimentalTime
     override fun getCoordinatesImpl(address: String): Coordinate {
         logger.debug { "Getting coordinates for address '$address'..." }
 
@@ -45,6 +47,7 @@ class NominatimGeocoder(
         return jsonNominatimClient
     }
 
+    @ExperimentalTime
     private fun getNominatimAddress(address: String): Address {
         logger.debug("Searching address '$address'...")
 
@@ -53,7 +56,9 @@ class NominatimGeocoder(
             logger.debug("Calling NominatimClient for address '$address'...")
             val searchRequest = NominatimSearchRequest()
             searchRequest.setQuery(address)
-            val addresses = nominatimClient.search(searchRequest)
+            val addresses = withRecordedDuration {
+                nominatimClient.search(searchRequest)
+            }
             logger.debug("Called NominatimClient for address '$address': ${addresses.size} results.")
             addresses
         }
