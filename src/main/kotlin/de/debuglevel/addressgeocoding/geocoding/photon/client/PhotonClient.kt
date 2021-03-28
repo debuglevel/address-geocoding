@@ -1,4 +1,4 @@
-package de.debuglevel.addressgeocoding.geocoding.photon
+package de.debuglevel.addressgeocoding.geocoding.photon.client
 
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.client.annotation.Client

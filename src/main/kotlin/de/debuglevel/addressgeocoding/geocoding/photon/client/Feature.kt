@@ -1,4 +1,4 @@
-package de.debuglevel.addressgeocoding.geocoding.photon
+package de.debuglevel.addressgeocoding.geocoding.photon.client
 
 
 import com.fasterxml.jackson.annotation.JsonProperty

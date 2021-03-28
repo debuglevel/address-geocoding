@@ -3,6 +3,9 @@ package de.debuglevel.addressgeocoding.geocoding.photon
 import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Coordinate
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
+import de.debuglevel.addressgeocoding.geocoding.photon.client.Feature
+import de.debuglevel.addressgeocoding.geocoding.photon.client.PhotonClient
+import de.debuglevel.addressgeocoding.geocoding.photon.client.PhotonClientImpl
 import mu.KotlinLogging
 import kotlin.time.ExperimentalTime
 
