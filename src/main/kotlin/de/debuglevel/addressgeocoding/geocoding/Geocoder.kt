@@ -88,7 +88,7 @@ abstract class Geocoder(
             val nextRequestDateTime = lastRequestOn.plusNanos(geocoderProperties.waitBetweenRequests)
             val waitingTimeMilliseconds = ChronoUnit.MILLIS.between(LocalDateTime.now(), nextRequestDateTime)
             if (waitingTimeMilliseconds > 0) {
-                logger.debug { "Waiting ${waitingTimeMilliseconds}ms until the next request to Nominatim is allowed..." }
+                logger.debug { "Waiting ${waitingTimeMilliseconds}ms until the next request is allowed..." }
                 Thread.sleep(waitingTimeMilliseconds)
             }
         }
