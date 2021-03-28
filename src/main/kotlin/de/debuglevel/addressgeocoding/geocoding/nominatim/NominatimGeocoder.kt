@@ -46,7 +46,6 @@ class NominatimGeocoder(
     private fun getNominatimAddress(address: String): Address {
         logger.debug("Searching address '$address'...")
 
-        // OpenStreetMaps Nominatim API allows only 1 parallel connection. Ensure this with a lock.
         val addresses = withDelayedExecution {
             logger.debug("Calling NominatimClient for address '$address'...")
             val searchRequest = NominatimSearchRequest()

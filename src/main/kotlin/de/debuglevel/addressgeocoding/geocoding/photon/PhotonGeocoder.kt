@@ -41,7 +41,6 @@ class PhotonGeocoder(
     private fun getPhotonFeature(address: String): Feature {
         logger.debug("Searching address '$address'...")
 
-        // Photon API should be used sequentially (i.e. with 1 concurrent connection).
         val resultset = withDelayedExecution {
             logger.debug("Calling PhotonClient for address '$address'...")
             val resultset = withRecordedDuration {
