@@ -15,23 +15,36 @@ class GeocoderFactory {
     private val logger = KotlinLogging.logger {}
 
     @EachBean(GeocoderConfiguration::class)
-    internal fun geocoder(configuration: GeocoderConfiguration): Geocoder {
-        logger.trace { "Building geocoder for configuration '${configuration.name}'..." }
+    internal fun geocoder(geocoderConfiguration: GeocoderConfiguration): Geocoder {
+        logger.trace { "Building geocoder for configuration '${geocoderConfiguration.name}'..." }
 
-        val property = when (configuration.type) {
-            "photon" -> PhotonProperties(configuration)
-            "nominatim" -> NominatimProperties(configuration).apply { email = configuration.email }
-            else -> throw InvalidGeocoderType(configuration.type)
-        }
+        val geocoderProperties = buildGeocoderProperties(geocoderConfiguration)
+        val geocoder = buildGeocoder(geocoderProperties)
 
-        val geocoder = when (property) {
-            is NominatimProperties -> NominatimGeocoder(property)
-            is PhotonProperties -> PhotonGeocoder(property)
-            else -> throw InvalidPropertyType(property)
-        }
-
-        logger.trace { "Built geocoder for configuration '${configuration.name}'" }
+        logger.trace { "Built geocoder for configuration '${geocoderConfiguration.name}'" }
         return geocoder
+    }
+
+    private fun buildGeocoder(geocoderProperties: GeocoderProperties): Geocoder {
+        val geocoder = when (geocoderProperties) {
+            is NominatimProperties -> NominatimGeocoder(geocoderProperties)
+            is PhotonProperties -> PhotonGeocoder(geocoderProperties)
+            else -> throw InvalidPropertyType(geocoderProperties)
+        }
+        return geocoder
+    }
+
+    private fun buildGeocoderProperties(geocoderConfiguration: GeocoderConfiguration): GeocoderProperties {
+        logger.trace { "Building GeocoderProperties for $geocoderConfiguration..." }
+
+        val geocoderProperties = when (geocoderConfiguration.type) {
+            "photon" -> PhotonProperties(geocoderConfiguration)
+            "nominatim" -> NominatimProperties(geocoderConfiguration).apply { email = geocoderConfiguration.email }
+            else -> throw InvalidGeocoderType(geocoderConfiguration.type)
+        }
+
+        logger.trace { "Built GeocoderProperties for $geocoderConfiguration: $geocoderProperties" }
+        return geocoderProperties
     }
 
     class InvalidGeocoderType(type: String) : Exception("Invalid backend type '$type'")
