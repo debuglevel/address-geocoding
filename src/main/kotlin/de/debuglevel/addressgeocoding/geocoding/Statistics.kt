@@ -8,4 +8,5 @@ data class Statistics(
     var unknownAddress: Int = 0,
     var success: Int = 0,
     var averageRequestDuration: Double? = null,
+    var queueSize: Int = 0,
 )

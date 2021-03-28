@@ -2,7 +2,7 @@ app:
   address-geocoding:
     service:
       # Maximum parallel geocoding executions.
-      # Note that the Nominatim and Photon geocoders will effectively reduce this to 1 parallel request to their service.
+      # This should be greater than the sum of all maximum-threads of all geocoders.
       maximum-threads: 5
     # Data pending to geocode (missing, failure or outdated data) are processed within a scheduler.
     scheduler:

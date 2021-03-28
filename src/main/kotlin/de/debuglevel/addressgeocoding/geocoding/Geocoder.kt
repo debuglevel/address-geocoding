@@ -6,6 +6,7 @@ import java.net.UnknownHostException
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.concurrent.Executors
+import java.util.concurrent.ThreadPoolExecutor
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
@@ -15,12 +16,24 @@ abstract class Geocoder(
 ) {
     private val logger = KotlinLogging.logger {}
 
-    val statistics = Statistics()
+    private val _statistics = Statistics()
+    val statistics: Statistics
+        get() {
+            return _statistics.apply { queueSize = executorQueueSize }
+        }
 
     /**
      * Executor to manage parallel (or serial, with 1 thread) requests.
      */
     private val executor = Executors.newFixedThreadPool(geocoderProperties.maximumThreads)
+
+    /**
+     * Count of the tasks in the executor queue.
+     */
+    val executorQueueSize: Int
+        get() {
+            return (executor as ThreadPoolExecutor).queue.size
+        }
 
     /**
      * When the last request to the service was made
@@ -132,15 +145,15 @@ abstract class Geocoder(
      * @return the return value of the action.
      */
     fun <T> withDelayedExecution(action: () -> T): T {
-        logger.debug("Submitting task to executor...")
+        logger.trace("Submitting task to executor...")
         val future = executor.submit<T> {
             waitForNextRequestAllowed()
             setLastRequestDateTime()
             return@submit action()
         }
-        logger.debug("Submitted task to executor; waiting task to finish...")
+        logger.trace("Submitted task to executor; waiting task to finish...")
         val value = future.get()
-        logger.debug("Got task result")
+        logger.trace("Got task result")
         return value
     }
 }
