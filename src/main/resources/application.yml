@@ -82,7 +82,7 @@ micronaut:
 
 logger:
   levels:
-    de.debuglevel: TRACE
+    de.debuglevel: DEBUG
     io.micronaut.http.client: DEBUG
     io.micronaut.http.server: DEBUG
     io.micronaut.data.query: DEBUG
