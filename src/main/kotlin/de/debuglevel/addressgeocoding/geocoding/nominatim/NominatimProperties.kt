@@ -15,4 +15,14 @@ class NominatimProperties() : GeocoderProperties() {
      * Email address to include in requests according to the Nominatim usage policy (https://nominatim.org/release-docs/latest/api/Search/#other)
      */
     var email: String = "github.com/debuglevel/address-geocoding"
+
+    override fun toString(): String {
+        return "NominatimProperties(" +
+                "enabled=$enabled, " +
+                "maximumThreads=$maximumThreads, " +
+                "waitBetweenRequests=$waitBetweenRequests, " +
+                "url='$url', " +
+                "email='$email'" +
+                ")"
+    }
 }

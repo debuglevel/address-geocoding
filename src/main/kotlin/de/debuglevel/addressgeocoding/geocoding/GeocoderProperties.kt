@@ -20,4 +20,13 @@ open class GeocoderProperties {
      * Base URL of the service
      */
     var url: String = "invalid"
+
+    override fun toString(): String {
+        return "GeocoderProperties(" +
+                "enabled=$enabled, " +
+                "maximumThreads=$maximumThreads, " +
+                "waitBetweenRequests=$waitBetweenRequests, " +
+                "url='$url'" +
+                ")"
+    }
 }

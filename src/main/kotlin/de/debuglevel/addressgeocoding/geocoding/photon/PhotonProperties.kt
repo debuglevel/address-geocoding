@@ -10,4 +10,13 @@ class PhotonProperties() : GeocoderProperties() {
         this.waitBetweenRequests = geocoderProperties.waitBetweenRequests
         this.url = geocoderProperties.url
     }
+
+    override fun toString(): String {
+        return "PhotonProperties(" +
+                "enabled=$enabled, " +
+                "maximumThreads=$maximumThreads, " +
+                "waitBetweenRequests=$waitBetweenRequests, " +
+                "url='$url'" +
+                ")"
+    }
 }
