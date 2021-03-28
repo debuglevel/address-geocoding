@@ -3,18 +3,15 @@ package de.debuglevel.addressgeocoding.geocoding.photon
 import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Coordinate
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
-import io.micronaut.context.annotation.Requires
 import mu.KotlinLogging
-import javax.inject.Singleton
 import kotlin.time.ExperimentalTime
 
-@Singleton
-@Requires(property = "app.address-geocoding.geocoders.photon.enabled", value = "true")
 class PhotonGeocoder(
     private val photonProperties: PhotonProperties,
-    private val photonClient: PhotonClient
 ) : Geocoder(photonProperties) {
     private val logger = KotlinLogging.logger {}
+
+    private val photonClient: PhotonClient = buildPhotonClient()
 
     @ExperimentalTime
     override fun getCoordinatesImpl(address: String): Coordinate {
@@ -29,6 +26,15 @@ class PhotonGeocoder(
 
         logger.debug { "Got coordinates for address '$address': $coordinate" }
         return coordinate
+    }
+
+    private fun buildPhotonClient(): PhotonClient {
+        logger.trace { "Building Photon client..." }
+
+        val photonClient = PhotonClientImpl(photonProperties.url)
+
+        logger.trace { "Built Photon client" }
+        return photonClient
     }
 
     @ExperimentalTime

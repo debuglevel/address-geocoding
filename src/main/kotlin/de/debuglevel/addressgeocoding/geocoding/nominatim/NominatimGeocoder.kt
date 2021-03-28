@@ -6,15 +6,10 @@ import de.debuglevel.addressgeocoding.geocoding.Geocoder
 import fr.dudie.nominatim.client.JsonNominatimClient
 import fr.dudie.nominatim.client.request.NominatimSearchRequest
 import fr.dudie.nominatim.model.Address
-import io.micronaut.context.annotation.Requires
 import mu.KotlinLogging
 import org.apache.http.impl.client.HttpClientBuilder
-import javax.inject.Singleton
 import kotlin.time.ExperimentalTime
 
-
-@Singleton
-@Requires(property = "app.address-geocoding.geocoders.nominatim.enabled", value = "true")
 class NominatimGeocoder(
     private val nominatimProperties: NominatimProperties,
 ) : Geocoder(nominatimProperties) {
@@ -28,13 +23,13 @@ class NominatimGeocoder(
 
         val result = getNominatimAddress(address)
 
-        val location = Coordinate(
+        val coordinate = Coordinate(
             result.longitude,
             result.latitude
         )
 
-        logger.debug { "Got coordinates for address '$address': $location" }
-        return location
+        logger.debug { "Got coordinates for address '$address': $coordinate" }
+        return coordinate
     }
 
     private fun buildNominatimClient(): JsonNominatimClient {

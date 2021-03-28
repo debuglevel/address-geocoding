@@ -15,4 +15,9 @@ open class GeocoderProperties {
      * How long should be waited between two requests (in nanoseconds)
      */
     var waitBetweenRequests: Long = 1_000_000_000
+
+    /**
+     * Base URL of the service
+     */
+    var url: String = "invalid"
 }

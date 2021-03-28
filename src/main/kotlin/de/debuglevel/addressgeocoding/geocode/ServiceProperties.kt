@@ -2,7 +2,7 @@ package de.debuglevel.addressgeocoding.geocode
 
 import io.micronaut.context.annotation.ConfigurationProperties
 
-@ConfigurationProperties("app.address-geocoding.geocode")
+@ConfigurationProperties("app.address-geocoding.service")
 class ServiceProperties {
     /**
      * Maximum parallel geocoding executions.

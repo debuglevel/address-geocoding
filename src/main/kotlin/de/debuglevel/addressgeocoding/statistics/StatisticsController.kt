@@ -16,11 +16,13 @@ class StatisticsController(private val geocodeService: GeocodeService) {
     private val logger = KotlinLogging.logger {}
 
     @Get("/")
-    fun getStatistics(): HttpResponse<GetStatisticsResponse> {
+    fun getStatistics(): HttpResponse<List<GetStatisticsResponse>> {
         logger.debug("Called getStatistics()")
         return try {
             val statistics = geocodeService.getStatistics()
-            val getStatisticsResponse = GetStatisticsResponse(statistics)
+            val getStatisticsResponse = statistics.map {
+                GetStatisticsResponse(it.key, it.value)
+            }
 
             HttpResponse.ok(getStatisticsResponse)
         } catch (e: Exception) {

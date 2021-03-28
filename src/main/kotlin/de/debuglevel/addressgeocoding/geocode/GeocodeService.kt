@@ -1,5 +1,6 @@
 package de.debuglevel.addressgeocoding.geocode
 
+import de.debuglevel.addressgeocoding.Application.applicationContext
 import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
 import de.debuglevel.addressgeocoding.geocoding.Statistics
@@ -20,7 +21,7 @@ import kotlin.time.ExperimentalTime
 @Singleton
 class GeocodeService(
     private val geocodeRepository: GeocodeRepository,
-    private val geocoder: Geocoder,
+    //private val geocoder: Geocoder,
     private val serviceProperties: ServiceProperties,
     private val outdatingProperties: OutdatingProperties,
     private val failureBackoffProperties: FailureBackoffProperties,
@@ -29,6 +30,13 @@ class GeocodeService(
 
     private val geocodingQueueMonitor = mutableMapOf<Geocode, Future<*>>()
     private val geocodingExecutor = Executors.newFixedThreadPool(serviceProperties.maximumThreads)
+
+    private val geocoders: List<Geocoder>
+        get() {
+            val geocoderBeans = applicationContext.getBeansOfType(Geocoder::class.java)
+                .toList()
+            return geocoderBeans
+        }
 
     fun get(id: UUID): Geocode {
         logger.debug { "Getting geocode with ID '$id'..." }
@@ -114,10 +122,11 @@ class GeocodeService(
         logger.debug { "Deleted $countDeleted of $countBefore geocodes, $countAfter remaining" }
     }
 
-    fun getStatistics(): Statistics {
+    fun getStatistics(): Map<String, Statistics> {
         logger.debug { "Getting statistics..." }
 
-        val statistics = geocoder.statistics
+        val statistics = geocoders
+            .associateBy({ it.javaClass.simpleName }, { it.statistics })
 
         logger.debug { "Got statistics: $statistics" }
         return statistics
@@ -198,6 +207,18 @@ class GeocodeService(
         return outdated
     }
 
+    /**
+     * Get a geocoder from all geocoders to perform the next geocoding action.
+     * @implNote Returns a random geocoder for now.
+     * TODO: Should do some load balancing or prefer the faster service
+     */
+    private val availableGeocoder: Geocoder
+        get() {
+            val geocoder = this.geocoders.random()
+            logger.trace { "Returning random geocoder: ${geocoder.javaClass.simpleName}..." }
+            return geocoder
+        }
+
     @ExperimentalTime
     fun geocode(geocode: Geocode) {
         logger.debug { "Geocoding $geocode..." }
@@ -205,7 +226,7 @@ class GeocodeService(
         geocode.lastGeocodingOn = LocalDateTime.now()
 
         try {
-            val coordinates = geocoder.getCoordinates(geocode.address)
+            val coordinates = availableGeocoder.getCoordinates(geocode.address)
             geocode.apply {
                 latitude = coordinates.latitude
                 longitude = coordinates.longitude
