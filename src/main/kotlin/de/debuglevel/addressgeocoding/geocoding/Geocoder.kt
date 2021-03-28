@@ -132,11 +132,10 @@ abstract class Geocoder(
      * @return the return value of the action.
      */
     fun <T> withDelayedExecution(action: () -> T): T {
-        waitForNextRequestAllowed()
-        setLastRequestDateTime()
-
         logger.debug("Submitting task to executor...")
         val future = executor.submit<T> {
+            waitForNextRequestAllowed()
+            setLastRequestDateTime()
             return@submit action()
         }
         logger.debug("Submitted task to executor; waiting task to finish...")
