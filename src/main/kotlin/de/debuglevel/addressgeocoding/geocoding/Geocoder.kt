@@ -83,15 +83,22 @@ abstract class Geocoder(
      * Waits until the next request is permitted to be made.
      */
     private fun waitForNextRequestAllowed() {
+        logger.trace { "Waiting until next request is allowed..." }
+
         val lastRequestOn = this.lastRequestOn
         if (lastRequestOn != null) {
             val nextRequestDateTime = lastRequestOn.plusNanos(geocoderProperties.waitBetweenRequests)
             val waitingTimeMilliseconds = ChronoUnit.MILLIS.between(LocalDateTime.now(), nextRequestDateTime)
+
+            logger.trace { "Last request was on $lastRequestOn, waiting duration between requests is ${geocoderProperties.waitBetweenRequests}ns, next request is on $nextRequestDateTime, waiting time is ${waitingTimeMilliseconds}ms" }
+
             if (waitingTimeMilliseconds > 0) {
-                logger.debug { "Waiting ${waitingTimeMilliseconds}ms until the next request is allowed..." }
+                logger.debug { "Sleeping ${waitingTimeMilliseconds}ms until the next request is allowed..." }
                 Thread.sleep(waitingTimeMilliseconds)
             }
         }
+
+        logger.trace { "Waited until next request is allowed" }
     }
 
     /**
@@ -112,6 +119,8 @@ abstract class Geocoder(
         val timedValue = measureTimedValue {
             action()
         }
+        logger.trace { "Action took ${timedValue.duration}" }
+
         calculateAverageRequestDuration(timedValue.duration)
 
         logger.trace { "Recorded duration for action: ${timedValue.duration}" }
@@ -130,7 +139,7 @@ abstract class Geocoder(
         val future = executor.submit<T> {
             return@submit action()
         }
-        logger.debug("Waiting task to finish...")
+        logger.debug("Submitted task to executor; waiting task to finish...")
         val value = future.get()
         logger.debug("Got task result")
         return value
