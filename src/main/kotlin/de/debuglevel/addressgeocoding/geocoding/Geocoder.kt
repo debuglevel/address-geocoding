@@ -1,10 +1,9 @@
 package de.debuglevel.addressgeocoding.geocoding
 
+import de.debuglevel.commons.wait.WaitUtils
 import mu.KotlinLogging
 import java.io.IOException
 import java.net.UnknownHostException
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadPoolExecutor
 import kotlin.time.Duration
@@ -34,11 +33,6 @@ abstract class Geocoder(
         get() {
             return (executor as ThreadPoolExecutor).queue.size
         }
-
-    /**
-     * When the last request to the service was made
-     */
-    private var lastRequestOn: LocalDateTime? = null
 
     /**
      * Get coordinates for an address, dependent on the actual implementation.
@@ -93,35 +87,6 @@ abstract class Geocoder(
     }
 
     /**
-     * Waits until the next request is permitted to be made.
-     */
-    private fun waitForNextRequestAllowed() {
-        logger.trace { "Waiting until next request is allowed..." }
-
-        val lastRequestOn = this.lastRequestOn
-        if (lastRequestOn != null) {
-            val nextRequestDateTime = lastRequestOn.plusNanos(geocoderProperties.waitBetweenRequests)
-            val waitingTimeMilliseconds = ChronoUnit.MILLIS.between(LocalDateTime.now(), nextRequestDateTime)
-
-            logger.trace { "Last request was on $lastRequestOn, waiting duration between requests is ${geocoderProperties.waitBetweenRequests}ns, next request is on $nextRequestDateTime, waiting time is ${waitingTimeMilliseconds}ms" }
-
-            if (waitingTimeMilliseconds > 0) {
-                logger.debug { "Sleeping ${waitingTimeMilliseconds}ms until the next request is allowed..." }
-                Thread.sleep(waitingTimeMilliseconds)
-            }
-        }
-
-        logger.trace { "Waited until next request is allowed" }
-    }
-
-    /**
-     * Set the last request DateTime to now()
-     */
-    private fun setLastRequestDateTime() {
-        this.lastRequestOn = LocalDateTime.now()
-    }
-
-    /**
      * Records the duration of the execution and
      * @return the return value of the action.
      */
@@ -147,8 +112,8 @@ abstract class Geocoder(
     fun <T> withDelayedExecution(action: () -> T): T {
         logger.trace("Submitting task to executor...")
         val future = executor.submit<T> {
-            waitForNextRequestAllowed()
-            setLastRequestDateTime()
+            WaitUtils.waitForNextRequestAllowed(this, this.geocoderProperties.waitBetweenRequests)
+            WaitUtils.setLastRequestDateTime(this)
             return@submit action()
         }
         logger.trace("Submitted task to executor; waiting task to finish...")
