@@ -1,12 +1,12 @@
 package de.debuglevel.addressgeocoding.geocoding
 
+import de.debuglevel.commons.statistics.RequestDurationUtils
 import de.debuglevel.commons.wait.WaitUtils
 import mu.KotlinLogging
 import java.io.IOException
 import java.net.UnknownHostException
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadPoolExecutor
-import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
@@ -66,27 +66,6 @@ abstract class Geocoder(
     }
 
     /**
-     * Calculates the new average duration based on this new duration.
-     * Must be called before incrementing the request counter for correct calculation.
-     */
-    @ExperimentalTime
-    private fun calculateAverageRequestDuration(duration: Duration) {
-        logger.trace { "Calculating new average request duration..." }
-
-        val averageDuration = statistics.averageRequestDuration
-        statistics.averageRequestDuration = if (averageDuration == null) {
-            duration.inSeconds
-        } else {
-            val calls = statistics.success + statistics.unknownAddress + statistics.unreachable
-            val durationSum = averageDuration * calls
-            val newAverageDuration = (durationSum + duration.inSeconds) / (calls + 1)
-            newAverageDuration
-        }
-
-        logger.trace { "Calculated new average request duration: ${statistics.averageRequestDuration}" }
-    }
-
-    /**
      * Records the duration of the execution and
      * @return the return value of the action.
      */
@@ -99,7 +78,12 @@ abstract class Geocoder(
         }
         logger.trace { "Action took ${timedValue.duration}" }
 
-        calculateAverageRequestDuration(timedValue.duration)
+        this.statistics.averageRequestDuration = RequestDurationUtils.calculateAverageRequestDuration(
+            this,
+            "default",
+            statistics.all,
+            timedValue.duration
+        )
 
         logger.trace { "Recorded duration for action: ${timedValue.duration}" }
         return timedValue.value
