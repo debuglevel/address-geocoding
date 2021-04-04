@@ -7,32 +7,39 @@ import kotlin.time.ExperimentalTime
 object RequestDurationUtils {
     private val logger = KotlinLogging.logger {}
 
-    private val averageDurations = mutableMapOf<Pair<Any, Any>, Double>()
+    // TODO: might better be a Map
+    private val requestDurations = mutableListOf<RequestDuration>()
 
     /**
      * Calculates the new average duration based on this new duration.
      * Must be called before incrementing the request counter for correct calculation.
      * @param requester The object which executes the request
      * @param scope Any object to define a scope within the requester; e.g. "POST /foobar" or "default" or null
-     * @param calls How many calls have been made so far (TODO: this could also be managed in here)
      * @param duration How long the request took
      */
     @ExperimentalTime
-    fun calculateAverageRequestDuration(requester: Any, scope: Any, calls: Int, duration: Duration): Double {
+    fun calculateAverageRequestDuration(requester: Any, scope: Any, duration: Duration): Double {
         logger.trace { "Calculating new average request duration..." }
 
         val requesterScope = requester to scope
-        val oldAverageDuration = averageDurations[requesterScope]
+        val requestDuration = requestDurations.firstOrNull { it.requester == requester && it.scope == scope }
+            ?: RequestDuration(requester, scope, 0)
+
+        val oldCalls = requestDuration.calls
+        val oldDurationSum = requestDuration.durationSum
+        val oldAverageDuration = requestDuration.averageDuration
 
         val newAverageDuration = if (oldAverageDuration == null) {
             duration.inSeconds
         } else {
-            val durationSum = oldAverageDuration * calls
-            val newAverageDuration = (durationSum + duration.inSeconds) / (calls + 1)
+            val newCalls = oldCalls + 1
+            val newDurationSum = oldDurationSum + duration.inSeconds
+            val newAverageDuration = newDurationSum / newCalls
             newAverageDuration
         }
 
-        averageDurations[requesterScope] = newAverageDuration
+        requestDuration.calls += 1
+        requestDuration.averageDuration = newAverageDuration
 
         logger.trace { "Calculated new average request duration: ${newAverageDuration}s" }
         return newAverageDuration

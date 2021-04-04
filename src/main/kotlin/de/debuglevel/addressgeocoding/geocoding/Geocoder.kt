@@ -81,7 +81,6 @@ abstract class Geocoder(
         this.statistics.averageRequestDuration = RequestDurationUtils.calculateAverageRequestDuration(
             this,
             "default",
-            statistics.all,
             timedValue.duration
         )
 
