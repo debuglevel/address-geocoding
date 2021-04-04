@@ -9,4 +9,9 @@ data class Statistics(
     var success: Int = 0,
     var averageRequestDuration: Double? = null,
     var queueSize: Int = 0,
-)
+) {
+    val all: Int
+        get() {
+            return unreachable + unknownAddress + success
+        }
+}
