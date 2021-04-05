@@ -1,7 +1,7 @@
 package de.debuglevel.addressgeocoding.geocoding
 
-import de.debuglevel.commons.statistics.RequestDurationUtils
-import de.debuglevel.commons.wait.WaitUtils
+import de.debuglevel.microservicecommons.statistics.RequestDurationUtils
+import de.debuglevel.microservicecommons.wait.WaitUtils
 import mu.KotlinLogging
 import java.io.IOException
 import java.net.UnknownHostException

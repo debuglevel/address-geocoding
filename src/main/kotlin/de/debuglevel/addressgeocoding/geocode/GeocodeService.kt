@@ -5,8 +5,8 @@ import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
 import de.debuglevel.addressgeocoding.geocoding.Geocoder
 import de.debuglevel.addressgeocoding.geocoding.Statistics
 import de.debuglevel.addressgeocoding.geocoding.UnreachableServiceException
-import de.debuglevel.commons.backoff.LinearBackoff
-import de.debuglevel.commons.outdate.OutdateUtils
+import de.debuglevel.microservicecommons.backoff.LinearBackoff
+import de.debuglevel.microservicecommons.outdate.OutdateUtils
 import io.micronaut.data.exceptions.EmptyResultException
 import io.micronaut.scheduling.annotation.Scheduled
 import mu.KotlinLogging
