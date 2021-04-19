@@ -1,6 +1,6 @@
 package de.debuglevel.addressgeocoding.statistics
 
-import de.debuglevel.addressgeocoding.geocoding.Statistics
+import de.debuglevel.addressgeocoding.geocoder.Statistics
 
 data class GetStatisticsResponse(
     var name: String,

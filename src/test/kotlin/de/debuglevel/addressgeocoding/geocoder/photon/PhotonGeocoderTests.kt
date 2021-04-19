@@ -1,11 +1,11 @@
-package de.debuglevel.addressgeocoding.geocoding.nominatim
+package de.debuglevel.addressgeocoding.geocoder.photon
 
 // Tests commented out because @Requires interferes
 //@MicronautTest
 //@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//class NominatimGeocoderTests {
+//class PhotonGeocoderTests {
 //    @Inject
-//    lateinit var geocoder: NominatimGeocoder
+//    lateinit var geocoder: PhotonGeocoder
 //
 //    fun validAddresses() = TestDataProvider.`valid addresses`()
 //

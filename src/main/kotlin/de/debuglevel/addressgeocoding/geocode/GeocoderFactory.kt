@@ -1,11 +1,11 @@
 package de.debuglevel.addressgeocoding.geocode
 
-import de.debuglevel.addressgeocoding.geocoding.Geocoder
-import de.debuglevel.addressgeocoding.geocoding.GeocoderProperties
-import de.debuglevel.addressgeocoding.geocoding.nominatim.NominatimGeocoder
-import de.debuglevel.addressgeocoding.geocoding.nominatim.NominatimProperties
-import de.debuglevel.addressgeocoding.geocoding.photon.PhotonGeocoder
-import de.debuglevel.addressgeocoding.geocoding.photon.PhotonProperties
+import de.debuglevel.addressgeocoding.geocoder.Geocoder
+import de.debuglevel.addressgeocoding.geocoder.GeocoderProperties
+import de.debuglevel.addressgeocoding.geocoder.nominatim.NominatimGeocoder
+import de.debuglevel.addressgeocoding.geocoder.nominatim.NominatimProperties
+import de.debuglevel.addressgeocoding.geocoder.photon.PhotonGeocoder
+import de.debuglevel.addressgeocoding.geocoder.photon.PhotonProperties
 import io.micronaut.context.annotation.EachBean
 import io.micronaut.context.annotation.Factory
 import mu.KotlinLogging

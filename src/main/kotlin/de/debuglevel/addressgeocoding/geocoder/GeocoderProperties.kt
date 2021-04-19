@@ -1,4 +1,4 @@
-package de.debuglevel.addressgeocoding.geocoding
+package de.debuglevel.addressgeocoding.geocoder
 
 open class GeocoderProperties {
     /**

@@ -1,8 +1,8 @@
-package de.debuglevel.addressgeocoding.geocoding.nominatim
+package de.debuglevel.addressgeocoding.geocoder.nominatim
 
-import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
-import de.debuglevel.addressgeocoding.geocoding.Coordinate
-import de.debuglevel.addressgeocoding.geocoding.Geocoder
+import de.debuglevel.addressgeocoding.geocoder.AddressNotFoundException
+import de.debuglevel.addressgeocoding.geocoder.Coordinate
+import de.debuglevel.addressgeocoding.geocoder.Geocoder
 import fr.dudie.nominatim.client.JsonNominatimClient
 import fr.dudie.nominatim.client.request.NominatimSearchRequest
 import fr.dudie.nominatim.model.Address

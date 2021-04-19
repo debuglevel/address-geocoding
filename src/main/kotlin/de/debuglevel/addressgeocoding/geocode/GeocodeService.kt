@@ -1,10 +1,10 @@
 package de.debuglevel.addressgeocoding.geocode
 
 import de.debuglevel.addressgeocoding.Application.applicationContext
-import de.debuglevel.addressgeocoding.geocoding.AddressNotFoundException
-import de.debuglevel.addressgeocoding.geocoding.Geocoder
-import de.debuglevel.addressgeocoding.geocoding.Statistics
-import de.debuglevel.addressgeocoding.geocoding.UnreachableServiceException
+import de.debuglevel.addressgeocoding.geocoder.AddressNotFoundException
+import de.debuglevel.addressgeocoding.geocoder.Geocoder
+import de.debuglevel.addressgeocoding.geocoder.Statistics
+import de.debuglevel.addressgeocoding.geocoder.UnreachableServiceException
 import de.debuglevel.microservicecommons.backoff.LinearBackoff
 import de.debuglevel.microservicecommons.outdate.OutdateUtils
 import io.micronaut.data.exceptions.EmptyResultException

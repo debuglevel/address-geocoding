@@ -1,4 +1,4 @@
-package de.debuglevel.addressgeocoding.geocoding
+package de.debuglevel.addressgeocoding.geocoder
 
 import de.debuglevel.microservicecommons.statistics.RequestDurationUtils
 import de.debuglevel.microservicecommons.wait.WaitUtils
