@@ -21,6 +21,7 @@ app:
     outdating:
       # duration after which a geocode is assumed to be outdated and should be requested again.
       duration: 90d
+    # Multiple geocoders can be defined, which will be used in parallel.
     geocoders:
       nominatim-osm:
         # Backend type
