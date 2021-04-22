@@ -13,11 +13,11 @@ paths:
   /geocodes:
     get:
       tags:
-        - geocodes
+      - geocodes
       summary: Get all geocodes
       description: Get all geocodes
       operationId: getAllGeocodes
-      parameters: [ ]
+      parameters: []
       responses:
         default:
           description: All geocodes
@@ -29,11 +29,11 @@ paths:
                   $ref: '#/components/schemas/GetGeocodeResponse'
     post:
       tags:
-        - geocodes
+      - geocodes
       summary: Create a geocode.
       description: Create a geocode.
       operationId: postOneGeocode
-      parameters: [ ]
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -52,11 +52,11 @@ paths:
                 $ref: '#/components/schemas/AddGeocodeResponse'
     delete:
       tags:
-        - geocodes
+      - geocodes
       summary: Delete all geocode.
       description: Delete all geocode.
       operationId: deleteAllGeocodes
-      parameters: [ ]
+      parameters: []
       responses:
         default:
           content:
@@ -66,18 +66,18 @@ paths:
   /geocodes/{id}:
     get:
       tags:
-        - geocodes
+      - geocodes
       summary: Get a geocode
       description: Get a geocode
       operationId: getOneGeocode
       parameters:
-        - name: id
-          in: path
-          description: ID of the geocode
-          required: true
-          schema:
-            type: string
-            format: uuid
+      - name: id
+        in: path
+        description: ID of the geocode
+        required: true
+        schema:
+          type: string
+          format: uuid
       responses:
         default:
           description: A geocode
@@ -87,18 +87,18 @@ paths:
                 $ref: '#/components/schemas/GetGeocodeResponse'
     delete:
       tags:
-        - geocodes
+      - geocodes
       summary: Delete a geocode.
       description: Delete a geocode.
       operationId: deleteOneGeocode
       parameters:
-        - name: id
-          in: path
-          description: ID of the geocode
-          required: true
-          schema:
-            type: string
-            format: uuid
+      - name: id
+        in: path
+        description: ID of the geocode
+        required: true
+        schema:
+          type: string
+          format: uuid
       responses:
         default:
           content:
@@ -108,9 +108,9 @@ paths:
   /statistics:
     get:
       tags:
-        - statistics
+      - statistics
       operationId: getStatistics
-      parameters: [ ]
+      parameters: []
       responses:
         default:
           description: getStatistics default response
@@ -158,12 +158,12 @@ components:
     Status:
       type: string
       enum:
-        - Pending
-        - AddressNotFound
-        - Succeeded
-        - FailedDueToQuotaExceeded
-        - FailedDueToUnreachableService
-        - FailedDueToUnexpectedError
+      - Pending
+      - AddressNotFound
+      - Succeeded
+      - FailedDueToQuotaExceeded
+      - FailedDueToUnreachableService
+      - FailedDueToUnexpectedError
     AddGeocodeResponse:
       type: object
       properties:
