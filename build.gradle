@@ -160,7 +160,7 @@ dependencies {
     implementation "fr.dudie:nominatim-api:$nominatimVersion"
 
     // Debuglevel Microservice Commons
-    implementation "com.github.debuglevel:microservice-commons:f24dd3964f"
+    implementation "com.github.debuglevel:microservice-commons:df39cee873"
 }
 
 // Java configuration

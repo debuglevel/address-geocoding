@@ -1,6 +1,6 @@
 package de.debuglevel.addressgeocoding.geocoder
 
-import de.debuglevel.microservicecommons.statistics.RequestDurationUtils
+import de.debuglevel.microservicecommons.statistics.CallDurationRecorder
 import de.debuglevel.microservicecommons.wait.WaitUtils
 import mu.KotlinLogging
 import java.io.IOException
@@ -78,11 +78,11 @@ abstract class Geocoder(
         }
         logger.trace { "Action took ${timedValue.duration}" }
 
-        this.statistics.averageRequestDuration = RequestDurationUtils.calculateAverageRequestDuration(
+        this.statistics.averageRequestDuration = CallDurationRecorder.record(
             this,
             "default",
             timedValue.duration
-        )
+        ).averageDuration
 
         logger.trace { "Recorded duration for action: ${timedValue.duration}" }
         return timedValue.value
@@ -95,7 +95,7 @@ abstract class Geocoder(
     fun <T> withDelayedExecution(action: () -> T): T {
         logger.trace("Submitting task to executor...")
         val future = executor.submit<T> {
-            WaitUtils.waitForNextRequestAllowed(this, this.geocoderProperties.waitBetweenRequests)
+            WaitUtils.waitForNextCallAllowed(this, this.geocoderProperties.waitBetweenRequests)
             WaitUtils.setLastRequestDateTime(this)
             return@submit action()
         }
