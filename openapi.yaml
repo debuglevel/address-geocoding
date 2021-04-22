@@ -1,0 +1,227 @@
+openapi: 3.0.1
+info:
+  title: Greeter Microservice
+  description: Microservice for greeting people
+  contact:
+    name: Marc Kohaupt
+    url: http://debuglevel.de
+  license:
+    name: Unlicense
+    url: https://unlicense.org/
+  version: "0.1"
+paths:
+  /geocodes:
+    get:
+      tags:
+        - geocodes
+      summary: Get all geocodes
+      description: Get all geocodes
+      operationId: getAllGeocodes
+      parameters: [ ]
+      responses:
+        default:
+          description: All geocodes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetGeocodeResponse'
+    post:
+      tags:
+        - geocodes
+      summary: Create a geocode.
+      description: Create a geocode.
+      operationId: postOneGeocode
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                addGeocodeRequest:
+                  $ref: '#/components/schemas/AddGeocodeRequest'
+        required: true
+      responses:
+        default:
+          description: A geocode with their ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddGeocodeResponse'
+    delete:
+      tags:
+        - geocodes
+      summary: Delete all geocode.
+      description: Delete all geocode.
+      operationId: deleteAllGeocodes
+      parameters: [ ]
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unit'
+  /geocodes/{id}:
+    get:
+      tags:
+        - geocodes
+      summary: Get a geocode
+      description: Get a geocode
+      operationId: getOneGeocode
+      parameters:
+        - name: id
+          in: path
+          description: ID of the geocode
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        default:
+          description: A geocode
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetGeocodeResponse'
+    delete:
+      tags:
+        - geocodes
+      summary: Delete a geocode.
+      description: Delete a geocode.
+      operationId: deleteOneGeocode
+      parameters:
+        - name: id
+          in: path
+          description: ID of the geocode
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unit'
+  /statistics:
+    get:
+      tags:
+        - statistics
+      operationId: getStatistics
+      parameters: [ ]
+      responses:
+        default:
+          description: getStatistics default response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetStatisticsResponse'
+components:
+  schemas:
+    GetGeocodeResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        address:
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
+        longitude:
+          type: number
+          format: double
+          nullable: true
+        latitude:
+          type: number
+          format: double
+          nullable: true
+        lastGeocodingOn:
+          type: string
+          format: date-time
+          nullable: true
+        failedAttempts:
+          type: integer
+          format: int32
+        createdOn:
+          type: string
+          format: date-time
+          nullable: true
+        lastModifiedOn:
+          type: string
+          format: date-time
+          nullable: true
+    Status:
+      type: string
+      enum:
+        - Pending
+        - AddressNotFound
+        - Succeeded
+        - FailedDueToQuotaExceeded
+        - FailedDueToUnreachableService
+        - FailedDueToUnexpectedError
+    AddGeocodeResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        address:
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
+        longitude:
+          type: number
+          format: double
+          nullable: true
+        latitude:
+          type: number
+          format: double
+          nullable: true
+        lastGeocodingOn:
+          type: string
+          format: date-time
+          nullable: true
+        failedAttempts:
+          type: integer
+          format: int32
+        createdOn:
+          type: string
+          format: date-time
+          nullable: true
+        lastModifiedOn:
+          type: string
+          format: date-time
+          nullable: true
+    AddGeocodeRequest:
+      type: object
+      properties:
+        address:
+          type: string
+    Unit:
+      type: object
+    GetStatisticsResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        unreachable:
+          type: integer
+          format: int32
+        unknownAddress:
+          type: integer
+          format: int32
+        success:
+          type: integer
+          format: int32
+        averageRequestDuration:
+          type: number
+          format: double
+          nullable: true
+        queueSize:
+          type: integer
+          format: int32
