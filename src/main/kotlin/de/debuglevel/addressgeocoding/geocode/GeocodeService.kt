@@ -208,14 +208,20 @@ class GeocodeService(
     }
 
     /**
-     * Get a geocoder from all geocoders to perform the next geocoding action.
-     * @implNote Returns the geocoder with fewest enqueued tasks.
+     * Gets a geocoder from all geocoders to perform the next geocoding action.
+     * @implNote Returns the geocoder with fewest enqueued tasks; return random geocoder if no tasks are enqueued.
      */
     private val availableGeocoder: Geocoder
         get() {
-            val geocoder = this.geocoders.minByOrNull { it.executorQueueSize }!!
-            logger.trace { "Returning geocoder with smallest executor queue: ${geocoder.javaClass.simpleName}..." }
-            return geocoder
+            return if (this.geocoders.all { it.executorQueueSize == 0 }) {
+                val randomGeocoder = this.geocoders.random()
+                logger.trace { "Returning random geocoder (as all have an empty executor queue): ${randomGeocoder.javaClass.simpleName}..." }
+                randomGeocoder
+            } else {
+                val geocoder = this.geocoders.minByOrNull { it.executorQueueSize }!!
+                logger.trace { "Returning geocoder with smallest executor queue: ${geocoder.javaClass.simpleName}..." }
+                geocoder
+            }
         }
 
     @ExperimentalTime
