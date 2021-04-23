@@ -37,6 +37,10 @@ data class Geocode(
      */
     var failedAttempts: Int = 0,
     /**
+     * The geocoder backend which was used to geocode the address.
+     */
+    var geocoder: String? = null,
+    /**
      * When created in the database
      */
     @DateCreated

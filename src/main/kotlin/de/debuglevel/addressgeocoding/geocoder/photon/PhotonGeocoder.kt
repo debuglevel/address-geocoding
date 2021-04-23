@@ -16,6 +16,8 @@ class PhotonGeocoder(
 
     private val photonClient: PhotonClient = buildPhotonClient()
 
+    override val name = "Photon (${photonProperties.url})"
+
     @ExperimentalTime
     override fun getCoordinatesImpl(address: String): Coordinate {
         logger.debug { "Getting coordinates for address '$address'..." }

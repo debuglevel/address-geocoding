@@ -82,6 +82,7 @@ class GeocodeService(
             latitude = geocode.latitude
             failedAttempts = geocode.failedAttempts
             lastGeocodingOn = geocode.lastGeocodingOn
+            geocoder = geocode.geocoder
         }
 
         val updatedGeocode = geocodeRepository.update(updateGeocode)
@@ -231,12 +232,14 @@ class GeocodeService(
         geocode.lastGeocodingOn = LocalDateTime.now()
 
         try {
-            val coordinates = availableGeocoder.getCoordinates(geocode.address)
+            val geocoder = availableGeocoder
+            val coordinates = geocoder.getCoordinates(geocode.address)
             geocode.apply {
                 latitude = coordinates.latitude
                 longitude = coordinates.longitude
                 status = Status.Succeeded
                 failedAttempts = 0
+                this.geocoder = geocoder.name
             }
 
             update(geocode.id!!, geocode)

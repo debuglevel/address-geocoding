@@ -15,6 +15,8 @@ abstract class Geocoder(
 ) {
     private val logger = KotlinLogging.logger {}
 
+    abstract val name: String
+
     private val _statistics = Statistics()
     val statistics: Statistics
         get() {
@@ -25,7 +27,6 @@ abstract class Geocoder(
      * Executor to manage parallel (or serial, with 1 thread) requests.
      */
     private val executor = Executors.newFixedThreadPool(geocoderProperties.maximumThreads)
-
     /**
      * Count of the tasks in the executor queue.
      */

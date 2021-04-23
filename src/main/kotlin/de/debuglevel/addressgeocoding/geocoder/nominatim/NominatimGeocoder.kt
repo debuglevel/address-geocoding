@@ -17,6 +17,8 @@ class NominatimGeocoder(
 
     private val nominatimClient: JsonNominatimClient = buildNominatimClient()
 
+    override val name = "Nominatim (${nominatimProperties.url})"
+
     @ExperimentalTime
     override fun getCoordinatesImpl(address: String): Coordinate {
         logger.debug { "Getting coordinates for address '$address'..." }
