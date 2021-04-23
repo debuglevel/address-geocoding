@@ -124,21 +124,24 @@ $ curl --location --request GET 'http://localhost:8080/statistics/'
     {
         "name": "NominatimGeocoder",
         "unreachable": 0,
-        "unknownAddress": 1,
-        "success": 6,
-        "averageRequestDuration": 0.20779604285714287,
+        "unknownAddress": 0,
+        "success": 123,
+        "averageRequestDuration": 0.3415425569593495,
         "queueSize": 0
     },
     {
         "name": "PhotonGeocoder",
         "unreachable": 0,
-        "unknownAddress": 3,
-        "success": 7,
-        "averageRequestDuration": 0.14565645643435547,
+        "unknownAddress": 0,
+        "success": 455,
+        "averageRequestDuration": 0.2584359925560442,
         "queueSize": 0
     }
 ]
 ```
+
+This particular statistics show that Photon was faster and therefore could process more geocoding tasks during a test
+batch.
 
 # Configuration
 
