@@ -17,11 +17,9 @@ import java.util.concurrent.Future
 import javax.inject.Singleton
 import kotlin.time.ExperimentalTime
 
-
 @Singleton
 class GeocodeService(
     private val geocodeRepository: GeocodeRepository,
-    //private val geocoder: Geocoder,
     private val serviceProperties: ServiceProperties,
     private val outdatingProperties: OutdatingProperties,
     private val failureBackoffProperties: FailureBackoffProperties,
@@ -33,9 +31,37 @@ class GeocodeService(
 
     private val geocoders: List<Geocoder>
         get() {
-            val geocoderBeans = applicationContext.getBeansOfType(Geocoder::class.java)
+            return applicationContext
+                .getBeansOfType(Geocoder::class.java)
                 .toList()
-            return geocoderBeans
+        }
+
+    /**
+     * Gets a geocoder from all geocoders to perform the next geocoding action.
+     * @implNote Returns the geocoder with fewest enqueued tasks; return random geocoder if no tasks are enqueued.
+     */
+    private val availableGeocoder: Geocoder
+        get() {
+            return if (this.geocoders.all { it.executorQueueSize == 0 }) {
+                val randomGeocoder = this.geocoders.random()
+                logger.trace { "Returning random geocoder (as all have an empty executor queue): ${randomGeocoder.javaClass.simpleName}..." }
+                randomGeocoder
+            } else {
+                val geocoder = this.geocoders.minByOrNull { it.executorQueueSize }!!
+                logger.trace { "Returning geocoder with smallest executor queue: ${geocoder.javaClass.simpleName}..." }
+                geocoder
+            }
+        }
+
+    val statistics: Map<String, Statistics>
+        get() {
+            logger.debug { "Getting statistics..." }
+
+            val statistics = geocoders
+                .associateBy({ it.javaClass.simpleName }, { it.statistics })
+
+            logger.debug { "Got statistics: $statistics" }
+            return statistics
         }
 
     fun get(id: UUID): Geocode {
@@ -48,6 +74,15 @@ class GeocodeService(
 
         logger.debug { "Got geocode with ID '$id': $geocode" }
         return geocode
+    }
+
+    fun getAll(): Set<Geocode> {
+        logger.debug { "Getting all geocodes ..." }
+
+        val geocodes = geocodeRepository.findAll().toSet()
+
+        logger.debug { "Got all geocodes" }
+        return geocodes
     }
 
     @ExperimentalTime
@@ -91,55 +126,13 @@ class GeocodeService(
         return updatedGeocode
     }
 
-    fun list(): Set<Geocode> {
-        logger.debug { "Getting all geocodes ..." }
-
-        val geocodes = geocodeRepository.findAll().toSet()
-
-        logger.debug { "Got all geocodes" }
-        return geocodes
-    }
-
-    fun delete(id: UUID) {
-        logger.debug { "Deleting geocode with ID '$id'..." }
-
-        if (geocodeRepository.existsById(id)) {
-            geocodeRepository.deleteById(id)
-        } else {
-            throw EntityNotFoundException(id)
-        }
-
-        logger.debug { "Deleted geocode with ID '$id'" }
-    }
-
-    fun deleteAll() {
-        logger.debug { "Deleting all geocodes..." }
-
-        val countBefore = geocodeRepository.count()
-        geocodeRepository.deleteAll() // CAVEAT: does not delete dependent entities; use this instead: geocodeRepository.findAll().forEach { geocodeRepository.delete(it) }
-        val countAfter = geocodeRepository.count()
-        val countDeleted = countBefore - countAfter
-
-        logger.debug { "Deleted $countDeleted of $countBefore geocodes, $countAfter remaining" }
-    }
-
-    fun getStatistics(): Map<String, Statistics> {
-        logger.debug { "Getting statistics..." }
-
-        val statistics = geocoders
-            .associateBy({ it.javaClass.simpleName }, { it.statistics })
-
-        logger.debug { "Got statistics: $statistics" }
-        return statistics
-    }
-
     @ExperimentalTime
     @Scheduled(
         fixedDelay = "\${app.address-geocoding.scheduler.interval:60s}",
         initialDelay = "\${app.address-geocoding.scheduler.initial-delay:60s}"
     )
-    fun updateMissingGeocodes() {
-        logger.debug { "Geocoding items with missing longitude and latitude..." }
+    fun updateGeocodes() {
+        logger.debug { "Updating outdated or missing-data geocodes..." }
 
         cleanupQueueMonitor()
 
@@ -162,6 +155,33 @@ class GeocodeService(
         logger.debug { "Cleaned up queue monitor (${geocodingQueueMonitor.count()} entries)" }
     }
 
+    private fun isMissingData(geocode: Geocode): Boolean {
+        logger.trace { "Checking if geocode $geocode has missing data..." }
+        val isMissingData = geocode.latitude == null || geocode.longitude == null
+        logger.trace { "Checked if geocode $geocode has missing data: $isMissingData" }
+        return isMissingData
+    }
+
+    private fun isOutdated(geocode: Geocode): Boolean {
+        logger.trace { "Checking if geocode $geocode is outdated (outdating-interval=${outdatingProperties.duration})..." }
+        val outdated = OutdateUtils.isOutdated(geocode.lastGeocodingOn, outdatingProperties.duration)
+        logger.trace { "Checked if geocode $geocode is outdated (outdating-interval=${outdatingProperties.duration}): $outdated" }
+        return outdated
+    }
+
+    private fun isBackedOff(geocode: Geocode): Boolean {
+        logger.trace { "Checking if geocode $geocode is backed off..." }
+        val isBackedOff = LinearBackoff.isBackedOff(
+            geocode.lastGeocodingOn,
+            geocode.failedAttempts.toLong(),
+            failureBackoffProperties.multiplierDuration,
+            failureBackoffProperties.maximumDuration,
+            geocode.hashCode()
+        )
+        logger.trace { "Checked if geocode $geocode is backed off: $isBackedOff" }
+        return isBackedOff
+    }
+
     @ExperimentalTime
     private fun enqueueGeocoding(geocode: Geocode) {
         logger.debug { "Enqueuing $geocode for geocoding..." }
@@ -180,50 +200,6 @@ class GeocodeService(
             logger.debug { "Not enqueued $geocode as it was already on queue" }
         }
     }
-
-    private fun isBackedOff(geocode: Geocode): Boolean {
-        logger.trace { "Checking if geocode $geocode is backed off..." }
-        val isBackedOff = LinearBackoff.isBackedOff(
-            geocode.lastGeocodingOn,
-            geocode.failedAttempts.toLong(),
-            failureBackoffProperties.multiplierDuration,
-            failureBackoffProperties.maximumDuration,
-            geocode.hashCode()
-        )
-        logger.trace { "Checked if geocode $geocode is backed off: $isBackedOff" }
-        return isBackedOff
-    }
-
-    private fun isMissingData(geocode: Geocode): Boolean {
-        logger.trace { "Checking if geocode $geocode has missing data..." }
-        val isMissingData = geocode.latitude == null || geocode.longitude == null
-        logger.trace { "Checked if geocode $geocode has missing data: $isMissingData" }
-        return isMissingData
-    }
-
-    private fun isOutdated(geocode: Geocode): Boolean {
-        logger.trace { "Checking if geocode $geocode is outdated (outdating-interval=${outdatingProperties.duration})..." }
-        val outdated = OutdateUtils.isOutdated(geocode.lastGeocodingOn, outdatingProperties.duration)
-        logger.trace { "Checked if geocode $geocode is outdated (outdating-interval=${outdatingProperties.duration}): $outdated" }
-        return outdated
-    }
-
-    /**
-     * Gets a geocoder from all geocoders to perform the next geocoding action.
-     * @implNote Returns the geocoder with fewest enqueued tasks; return random geocoder if no tasks are enqueued.
-     */
-    private val availableGeocoder: Geocoder
-        get() {
-            return if (this.geocoders.all { it.executorQueueSize == 0 }) {
-                val randomGeocoder = this.geocoders.random()
-                logger.trace { "Returning random geocoder (as all have an empty executor queue): ${randomGeocoder.javaClass.simpleName}..." }
-                randomGeocoder
-            } else {
-                val geocoder = this.geocoders.minByOrNull { it.executorQueueSize }!!
-                logger.trace { "Returning geocoder with smallest executor queue: ${geocoder.javaClass.simpleName}..." }
-                geocoder
-            }
-        }
 
     @ExperimentalTime
     fun geocode(geocode: Geocode) {
@@ -273,6 +249,29 @@ class GeocodeService(
 
             update(geocode.id!!, geocode)
         }
+    }
+
+    fun delete(id: UUID) {
+        logger.debug { "Deleting geocode with ID '$id'..." }
+
+        if (geocodeRepository.existsById(id)) {
+            geocodeRepository.deleteById(id)
+        } else {
+            throw EntityNotFoundException(id)
+        }
+
+        logger.debug { "Deleted geocode with ID '$id'" }
+    }
+
+    fun deleteAll() {
+        logger.debug { "Deleting all geocodes..." }
+
+        val countBefore = geocodeRepository.count()
+        geocodeRepository.deleteAll() // CAVEAT: does not delete dependent entities; use this instead: geocodeRepository.findAll().forEach { geocodeRepository.delete(it) }
+        val countAfter = geocodeRepository.count()
+        val countDeleted = countBefore - countAfter
+
+        logger.debug { "Deleted $countDeleted of $countBefore geocodes, $countAfter remaining" }
     }
 
     class EntityNotFoundException(criteria: Any) : Exception("Entity '$criteria' does not exist.")

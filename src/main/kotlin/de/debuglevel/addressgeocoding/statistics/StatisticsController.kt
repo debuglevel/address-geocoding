@@ -19,7 +19,7 @@ class StatisticsController(private val geocodeService: GeocodeService) {
     fun getStatistics(): HttpResponse<List<GetStatisticsResponse>> {
         logger.debug("Called getStatistics()")
         return try {
-            val statistics = geocodeService.getStatistics()
+            val statistics = geocodeService.statistics
             val getStatisticsResponse = statistics.map {
                 GetStatisticsResponse(it.key, it.value)
             }

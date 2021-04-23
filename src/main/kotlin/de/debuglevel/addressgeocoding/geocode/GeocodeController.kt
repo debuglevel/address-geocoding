@@ -26,7 +26,7 @@ class GeocodeController(private val geocodeService: GeocodeService) {
     fun getAllGeocodes(): HttpResponse<List<GetGeocodeResponse>> {
         logger.debug("Called getAllGeocodes()")
         return try {
-            val geocodes = geocodeService.list()
+            val geocodes = geocodeService.getAll()
             val getGeocodeResponses = geocodes
                 .map { GetGeocodeResponse(it) }
 
