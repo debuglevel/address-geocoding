@@ -147,6 +147,9 @@ components:
         failedAttempts:
           type: integer
           format: int32
+        geocoder:
+          type: string
+          nullable: true
         createdOn:
           type: string
           format: date-time
