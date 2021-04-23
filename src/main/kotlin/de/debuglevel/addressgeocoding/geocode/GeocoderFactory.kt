@@ -26,12 +26,11 @@ class GeocoderFactory {
     }
 
     private fun buildGeocoder(geocoderProperties: GeocoderProperties): Geocoder {
-        val geocoder = when (geocoderProperties) {
+        return when (geocoderProperties) {
             is NominatimProperties -> NominatimGeocoder(geocoderProperties)
             is PhotonProperties -> PhotonGeocoder(geocoderProperties)
             else -> throw InvalidPropertyType(geocoderProperties)
         }
-        return geocoder
     }
 
     private fun buildGeocoderProperties(geocoderConfiguration: GeocoderConfiguration): GeocoderProperties {
